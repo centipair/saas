@@ -1,0 +1,38 @@
+# Rename this file to secret_settings.py
+
+
+# Make this unique, and don't share it with anybody.
+SECRET_KEY = ''
+
+ADMIN_EMAIL = ''
+
+#Database settings
+
+PRODUCTION_DB_NAME = ''
+PRODUCTION_DB_USERNAME = ''
+PRODUCTION_DB_PASSWORD = ''
+
+DEVELOPMENT_DB_NAME = ''
+DEVELOPMENT_DB_USERNAME = ''
+DEVELOPMENT_DB_PASSWORD = ''
+
+TEST_DB_NAME = ''
+TEST_DB_USERNAME = ''
+TEST_DB_PASSWORD = ''
+
+#EMAIL_USE_TLS = True  # True for gmail
+#EMAIL_HOST = 'smtp.gmail.com'
+
+EMAIL_HOST_USER = ''
+EMAIL_HOST_PASSWORD = ''
+EMAIL_HOST = ''
+
+
+#STRIPE_TEST_SECRET_KEY = ''
+#STRIPE_TEST_PUBLISHABLE_KEY = ''
+
+#STRIPE_LIVE_SECRET_KEY = ''
+#STRIPE_LIVE_PUBLISHABLE_KEY = ''
+
+#STRIPE_TEST_CLIENT_ID = ''
+#STRIPE_LIVE_CLIENT_ID = ''
