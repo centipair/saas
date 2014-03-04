@@ -148,7 +148,6 @@ def send_contact_email(contact_details):
 
 
 def send_sale_notification_email(item):
-    print item.store.owner.email
     email_subject = 'SomethingLocal Sold Item: ' + item.title
     email_body = 'Seling price:' + str(item.price) + '\r\n' +\
                  'Please visit your dashboard for more details'

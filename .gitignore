@@ -36,6 +36,7 @@ test_debug.py
 .emacs.*
 *_flymake.py
 venv/
+venv3x/
 bkp/
 uploads/
 test_data.json

@@ -10,7 +10,7 @@ class Site(models.Model):
     template_dir = models.CharField(max_length=1024)
     user = models.ForeignKey(User)
     default_app = models.CharField(max_length=128)
-    core_site = models.BooleanField(default=False)
+    is_core = models.BooleanField(default=False)
 
     def __unicode__(self):
         return u'%s' % (self.name)
