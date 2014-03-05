@@ -59,7 +59,7 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'south',
-    'core'
+    'centipair.core',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -70,7 +70,19 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'core.middleware.SiteMiddleware'
+    'centipair.core.middleware.SiteMiddleware'
+)
+
+TEMPLATE_CONTEXT_PROCESSORS = (
+    "django.contrib.auth.context_processors.auth",
+    "django.core.context_processors.debug",
+    "django.core.context_processors.i18n",
+    "django.core.context_processors.media",
+    "django.core.context_processors.static",
+    "django.core.context_processors.tz",
+    "django.contrib.messages.context_processors.messages",
+    'django.core.context_processors.request',
+    "centipair.core.context_processors.template",
 )
 
 ROOT_URLCONF = 'saas.urls'
@@ -119,8 +131,11 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.6/howto/static-files/
 
 STATIC_URL = '/static/'
-STATIC_ROOT = BASE_DIR + '/saas/resources/'
-UPLOAD_PATH = STATIC_ROOT + '/uploads/'
+STATIC_ROOT = BASE_DIR + '/saas/resources'
+UPLOAD_PATH = STATIC_ROOT + '/uploads'
+
+USER_TEMPLATE_PATH = STATIC_ROOT + '/user-templates'
+USER_FILES_PATH = BASE_DIR + '/saas/user-files'
 
 APPS = {'CORE': 'core',
         'CMS': 'cms',

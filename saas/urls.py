@@ -8,6 +8,6 @@ urlpatterns = patterns(
     # Examples:
     # url(r'^$', 'saas.views.home', name='home'),
     # url(r'^blog/', include('blog.urls')),
-    url(r'^$', 'core.views.home', name='home'),
+    url(r'^$', 'centipair.core.views.home', name='home'),
     url(r'^admin/', include(admin.site.urls)),
 )

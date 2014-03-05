@@ -1,5 +1,5 @@
 #from django.http import HttpResponse
-from core.models import Site
+from centipair.core.models import Site
 from django.db.models import Q
 from django.http import HttpResponse
 from django.utils.translation import ugettext as _

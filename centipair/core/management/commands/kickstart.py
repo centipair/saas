@@ -1,6 +1,6 @@
 from __future__ import print_function
 from django.core.management.base import BaseCommand, CommandError
-from core.models import Site
+from centipair.core.models import Site
 from django.contrib.auth.models import User
 from django.conf import settings
 from django.utils.translation import ugettext as _
