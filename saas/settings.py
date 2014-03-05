@@ -136,7 +136,15 @@ UPLOAD_PATH = STATIC_ROOT + '/uploads'
 
 USER_TEMPLATE_PATH = STATIC_ROOT + '/user-templates'
 USER_FILES_PATH = BASE_DIR + '/saas/user-files'
+CORE_TEMPLATE_PATH = 'centipair/core'
+CMS_TEMPLATE_PATH = 'centipair/cms'
+
+TEMPLATE_DIRS = (
+    STATIC_ROOT + '/templates',
+)
 
 APPS = {'CORE': 'core',
         'CMS': 'cms',
         'STORE': 'store'}
+
+DEFAULT_APP = APPS['CORE']
