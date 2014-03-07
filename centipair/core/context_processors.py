@@ -9,7 +9,9 @@ def template(context):
     site = context.site
     if site.is_core:
         template_media_url = settings.STATIC_URL + \
-            "/templates/" + settings.CORE_TEMPLATE_PATH
+            "templates" + settings.CORE_PATH + "/" + site.template_dir
+        template_path = settings.CORE_TEMPLATE_PATH + "/" +\
+            site.template_dir + "/base.html"
     else:
         template_media_url = settings.MEDIA_URL + "templates/" + \
             site.template_dir + "/" + site.template_name + \

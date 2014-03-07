@@ -130,7 +130,9 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.6/howto/static-files/
 
-STATIC_URL = '/static/'
+STATIC_URL = 'http://localhost:8090/saas/resources/'
+TEMPLATE_STATIC_URL = STATIC_URL + 'templates'
+#STATIC_URL = '/static/'
 STATIC_ROOT = BASE_DIR + '/saas/resources'
 UPLOAD_PATH = STATIC_ROOT + '/uploads'
 
@@ -138,6 +140,11 @@ USER_TEMPLATE_PATH = STATIC_ROOT + '/user-templates'
 USER_FILES_PATH = BASE_DIR + '/saas/user-files'
 CORE_TEMPLATE_PATH = 'centipair/core'
 CMS_TEMPLATE_PATH = 'centipair/cms'
+
+CORE_PATH = '/centipair/core'
+CMS_PATH = '/centipair/cms'
+
+TEMPLATE_PATH = '/templates/'
 
 TEMPLATE_DIRS = (
     STATIC_ROOT + '/templates',
