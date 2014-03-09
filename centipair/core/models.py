@@ -1,25 +1,29 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.conf import settings
 
 
 class Site(models.Model):
     name = models.CharField(max_length=1024)
-    domain_name = models.CharField(max_length=1024)
-    service_domain_name = models.CharField(max_length=1024)
-    template_name = models.CharField(max_length=1024)
-    template_dir = models.CharField(max_length=1024)
     user = models.ForeignKey(User)
-    default_app = models.CharField(max_length=128)
-    is_core = models.BooleanField(default=False)
+    default_app = models.CharField(max_length=64, default=settings.APPS['CMS'])
+    domain_name = models.CharField(max_length=1024)
+    store_domain_name = models.CharField(max_length=1024)
+    cms_domain_name = models.CharField(max_length=1024)
+
+    def get_app(self, app):
+        return App.objects.get(site=self, app=app)
 
     def __unicode__(self):
         return u'%s' % (self.name)
 
 
-class Template(models.Model):
-    name = models.CharField(max_length=1024)
+class App(models.Model):
+    name = models.CharField()
+    template_name = models.CharField(max_length=1024)
     template_dir = models.CharField(max_length=1024)
     site = models.ForeignKey(Site)
+    app = models.CharField()
 
 
 class Page(models.Model):

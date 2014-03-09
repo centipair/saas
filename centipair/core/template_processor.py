@@ -3,7 +3,6 @@ from django.conf import settings
 
 
 def get_base_path(request, base_file):
-    print "in hererererre"
     site = request.site
     if site.is_core:
         base_path = settings.CORE_TEMPLATE_PATH + "/" +\
@@ -11,7 +10,6 @@ def get_base_path(request, base_file):
     else:
         base_path = site.template_dir + "/" + site.template_name + "/" +\
             base_file
-    print base_path
     return base_path
 
 
@@ -49,3 +47,11 @@ def render_template(request, template_file, context, app=None, base=None):
     if base:
         context["base"] = get_base_path(request, base)
     return render(request, template_location, context)
+
+
+def render_app_template(request, template_file, context,
+                        app=settings.APPS['CMS'],
+                        base="base.html"):
+    site = request.site
+    app = App.objects.get(site=request.site, app=app)
+    template = site.template_dir + "/" + app + "/" + app.template_name
