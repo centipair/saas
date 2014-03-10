@@ -12,24 +12,27 @@ class Migration(SchemaMigration):
         db.create_table(u'core_site', (
             (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
             ('name', self.gf('django.db.models.fields.CharField')(max_length=1024)),
+            ('user', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['auth.User'])),
+            ('default_app', self.gf('django.db.models.fields.CharField')(default='cms', max_length=64)),
             ('domain_name', self.gf('django.db.models.fields.CharField')(max_length=1024)),
             ('service_domain_name', self.gf('django.db.models.fields.CharField')(max_length=1024)),
-            ('template_name', self.gf('django.db.models.fields.CharField')(max_length=1024)),
+            ('store_domain_name', self.gf('django.db.models.fields.CharField')(max_length=1024, null=True, blank=True)),
+            ('blog_domain_name', self.gf('django.db.models.fields.CharField')(max_length=1024, null=True, blank=True)),
+            ('support_domain_name', self.gf('django.db.models.fields.CharField')(max_length=1024, null=True, blank=True)),
             ('template_dir', self.gf('django.db.models.fields.CharField')(max_length=1024)),
-            ('user', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['auth.User'])),
-            ('default_app', self.gf('django.db.models.fields.CharField')(max_length=128)),
             ('is_core', self.gf('django.db.models.fields.BooleanField')(default=False)),
         ))
         db.send_create_signal(u'core', ['Site'])
 
-        # Adding model 'Template'
-        db.create_table(u'core_template', (
+        # Adding model 'App'
+        db.create_table(u'core_app', (
             (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('name', self.gf('django.db.models.fields.CharField')(max_length=1024)),
+            ('template_name', self.gf('django.db.models.fields.CharField')(max_length=1024)),
             ('template_dir', self.gf('django.db.models.fields.CharField')(max_length=1024)),
             ('site', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['core.Site'])),
+            ('app', self.gf('django.db.models.fields.CharField')(max_length=64)),
         ))
-        db.send_create_signal(u'core', ['Template'])
+        db.send_create_signal(u'core', ['App'])
 
         # Adding model 'Page'
         db.create_table(u'core_page', (
@@ -49,8 +52,8 @@ class Migration(SchemaMigration):
         # Deleting model 'Site'
         db.delete_table(u'core_site')
 
-        # Deleting model 'Template'
-        db.delete_table(u'core_template')
+        # Deleting model 'App'
+        db.delete_table(u'core_app')
 
         # Deleting model 'Page'
         db.delete_table(u'core_page')
@@ -93,6 +96,14 @@ class Migration(SchemaMigration):
             'model': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
             'name': ('django.db.models.fields.CharField', [], {'max_length': '100'})
         },
+        u'core.app': {
+            'Meta': {'object_name': 'App'},
+            'app': ('django.db.models.fields.CharField', [], {'max_length': '64'}),
+            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'site': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['core.Site']"}),
+            'template_dir': ('django.db.models.fields.CharField', [], {'max_length': '1024'}),
+            'template_name': ('django.db.models.fields.CharField', [], {'max_length': '1024'})
+        },
         u'core.page': {
             'Meta': {'object_name': 'Page'},
             'description': ('django.db.models.fields.TextField', [], {'max_length': '1024', 'null': 'True', 'blank': 'True'}),
@@ -106,22 +117,17 @@ class Migration(SchemaMigration):
         },
         u'core.site': {
             'Meta': {'object_name': 'Site'},
-            'default_app': ('django.db.models.fields.CharField', [], {'max_length': '128'}),
+            'blog_domain_name': ('django.db.models.fields.CharField', [], {'max_length': '1024', 'null': 'True', 'blank': 'True'}),
+            'default_app': ('django.db.models.fields.CharField', [], {'default': "'cms'", 'max_length': '64'}),
             'domain_name': ('django.db.models.fields.CharField', [], {'max_length': '1024'}),
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'is_core': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
             'name': ('django.db.models.fields.CharField', [], {'max_length': '1024'}),
             'service_domain_name': ('django.db.models.fields.CharField', [], {'max_length': '1024'}),
+            'store_domain_name': ('django.db.models.fields.CharField', [], {'max_length': '1024', 'null': 'True', 'blank': 'True'}),
+            'support_domain_name': ('django.db.models.fields.CharField', [], {'max_length': '1024', 'null': 'True', 'blank': 'True'}),
             'template_dir': ('django.db.models.fields.CharField', [], {'max_length': '1024'}),
-            'template_name': ('django.db.models.fields.CharField', [], {'max_length': '1024'}),
             'user': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['auth.User']"})
-        },
-        u'core.template': {
-            'Meta': {'object_name': 'Template'},
-            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'name': ('django.db.models.fields.CharField', [], {'max_length': '1024'}),
-            'site': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['core.Site']"}),
-            'template_dir': ('django.db.models.fields.CharField', [], {'max_length': '1024'})
         }
     }
 

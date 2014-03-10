@@ -1,5 +1,19 @@
 from django.shortcuts import render
 from django.conf import settings
+from centipair.core.models import App
+
+
+def cdn_file(request, source):
+    site = request.site
+    template_path = site.template_dir + "/cdn/" + source
+    source_file_url = settings.TEMPLATE_STATIC_URL + "/" + template_path
+    return source_file_url
+
+
+def core_cdn_file(request, source):
+    source_file_url = settings.TEMPLATE_STATIC_URL + "/" +\
+        settings.CORE_TEMPLATE_PATH + "/" + source
+    return source_file_url
 
 
 def get_base_path(request, base_file):
@@ -13,13 +27,9 @@ def get_base_path(request, base_file):
     return base_path
 
 
-def render_core_template(request, template_file, context, base_file=None):
+def render_core_template(request, template_file, context):
     """Renders core templates """
-    site = request.site
-    template_dir = settings.CORE_TEMPLATE_PATH + "/" + site.template_name + "/"
-    template_location = template_dir + template_file
-    if base_file:
-        context["base"] = get_base_path(request, base_file)
+    template_location = settings.CORE_TEMPLATE_PATH + "/" + template_file
     return render(request, template_location, context)
 
 
@@ -32,26 +42,28 @@ def render_cms_template(request, template_file, context):
     return render(request, template_location, context)
 
 
-def render_template(request, template_file, context, app=None, base=None):
+def render_template(request, template_file, context={}, app=None, base=None):
     """Renders template based on the site"""
 
     if app:
         if app == settings.APPS['CORE']:
-            return render_core_template(request, template_file, context,
-                                        base_file=base)
-        elif app == settings.APPS['CMS']:
-            return render_cms_template(request, template_file, context)
-    site = request.site
-    template_dir = site.template_dir + "/" + site.template_name + "/"
-    template_location = template_dir + template_file
-    if base:
-        context["base"] = get_base_path(request, base)
-    return render(request, template_location, context)
+            return render_core_template(request, template_file, context)
+        else:
+            return render_app_template(request, template_file, context,
+                                       app, base)
+    else:
+        return render_core_template(request, "app_error.html", context)
 
 
-def render_app_template(request, template_file, context,
-                        app=settings.APPS['CMS'],
-                        base="base.html"):
+def render_app_template(request, template_file, context, app, base):
     site = request.site
     app = App.objects.get(site=request.site, app=app)
-    template = site.template_dir + "/" + app + "/" + app.template_name
+    template_location = site.template_dir + "/" + app.template_dir +\
+        "/" + app.template_name + "/" + template_file
+    if context:
+        context["centipair_base_template"] = base
+    else:
+        context = {}
+        context["centipair_base_template"] = base
+
+    return render(request, template_location, context)

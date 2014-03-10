@@ -8,22 +8,25 @@ class Site(models.Model):
     user = models.ForeignKey(User)
     default_app = models.CharField(max_length=64, default=settings.APPS['CMS'])
     domain_name = models.CharField(max_length=1024)
-    store_domain_name = models.CharField(max_length=1024)
-    cms_domain_name = models.CharField(max_length=1024)
-
-    def get_app(self, app):
-        return App.objects.get(site=self, app=app)
+    service_domain_name = models.CharField(max_length=1024)
+    store_domain_name = models.CharField(max_length=1024,
+                                         null=True, blank=True)
+    blog_domain_name = models.CharField(max_length=1024,
+                                        null=True, blank=True)
+    support_domain_name = models.CharField(max_length=1024,
+                                           null=True, blank=True)
+    template_dir = models.CharField(max_length=1024)
+    is_core = models.BooleanField(default=False)
 
     def __unicode__(self):
         return u'%s' % (self.name)
 
 
 class App(models.Model):
-    name = models.CharField()
     template_name = models.CharField(max_length=1024)
     template_dir = models.CharField(max_length=1024)
     site = models.ForeignKey(Site)
-    app = models.CharField()
+    app = models.CharField(max_length=64)
 
 
 class Page(models.Model):

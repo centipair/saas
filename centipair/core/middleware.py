@@ -11,8 +11,13 @@ class SiteMiddleware:
         domain_name = request.META["HTTP_HOST"].split(":")[0]
 
         try:
-            site_obj = Site.objects.get(Q(domain_name=domain_name) |
-                                        Q(service_domain_name=domain_name))
+            site_obj = Site.objects.get(
+                Q(domain_name=domain_name) |
+                Q(service_domain_name=domain_name) |
+                Q(store_domain_name=domain_name) |
+                Q(blog_domain_name=domain_name) |
+                Q(support_domain_name=domain_name))
+
             request.site = site_obj
         except Site.DoesNotExist:
             return HttpResponse(_('Not found'), status=404)

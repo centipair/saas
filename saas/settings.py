@@ -82,7 +82,6 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     "django.core.context_processors.tz",
     "django.contrib.messages.context_processors.messages",
     'django.core.context_processors.request',
-    "centipair.core.context_processors.template",
 )
 
 ROOT_URLCONF = 'saas.urls'
@@ -139,11 +138,6 @@ UPLOAD_PATH = STATIC_ROOT + '/uploads'
 USER_TEMPLATE_PATH = STATIC_ROOT + '/user-templates'
 USER_FILES_PATH = BASE_DIR + '/saas/user-files'
 CORE_TEMPLATE_PATH = 'centipair/core'
-CMS_TEMPLATE_PATH = 'centipair/cms'
-
-CORE_PATH = '/centipair/core'
-CMS_PATH = '/centipair/cms'
-
 TEMPLATE_PATH = '/templates/'
 
 TEMPLATE_DIRS = (
@@ -152,6 +146,8 @@ TEMPLATE_DIRS = (
 
 APPS = {'CORE': 'core',
         'CMS': 'cms',
-        'STORE': 'store'}
+        'STORE': 'store',
+        'BLOG': 'blog',
+        'SUPPORT': 'support'}
 
 DEFAULT_APP = APPS['CORE']
