@@ -70,7 +70,7 @@ def core_cdn_redirect(request, source):
 
 class CoreFormView(FormView):
     response_json = {}
-    registration_success_message = _("Registration success. Please activate your account by following the instructions we send to your email.")
+    success_message = _("Success")
     system_error_message = _("System error.Please try again after sometime")
     form_error_message = _("Submitted data is invalid.")
 
@@ -92,7 +92,6 @@ class CoreFormView(FormView):
         # We make sure to call the parent's form_valid() method because
         # it might do some processing (in the case of CreateView, it will
         # call form.save() for example).
-        print("form valid")
         try:
             return self.execute(form)
         except:
@@ -100,7 +99,7 @@ class CoreFormView(FormView):
             self.response_json["message"] = self.system_error_message
             #TODO: Log this error for future debugging
         self.response_json["status"] = 200
-        self.response_json["message"] = self.registration_success_message
+        self.response_json["message"] = self.success_message
 
     def execute(self, form):
         """
@@ -113,6 +112,7 @@ class CoreFormView(FormView):
 class RegistrationView(CoreFormView):
     form_class = RegistrationForm
     template_name = settings.CORE_TEMPLATE_PATH + '/registration.html'
+    success_message = _("Registration success. Please activate your account by following the instructions we send to your email.")
 
     def execute(self, form):
         return HttpResponse("Yes this was executed")

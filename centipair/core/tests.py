@@ -30,14 +30,13 @@ class RegistrationTest(TestCase):
 
     def test_registration_page(self):
         response = get_page('registration')
-        print response.content
+        self.assertEqual(response.status_code, 200)
 
     def test_registration(self):
         data = {"username": "user",
-                "email": "devasiajosephtest@gmai",
+                "email": "devasiajosephtest@gmail.com",
                 "password1": "password",
                 "password2": "password",
                 "tos": True}
         response = core_ajax_post('registration', data)
-        print response.content
-        print response.status_code
+        self.assertEqual(response.status_code, 200)
