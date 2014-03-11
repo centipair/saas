@@ -80,13 +80,9 @@ class CoreFormView(FormView):
         return HttpResponse(data, **response_kwargs)
 
     def form_invalid(self, form):
-        if self.request.is_ajax():
-            self.response_json["errors"] = form.errors
-            self.response_json["message"] = self.form_error_message
-            return self.render_to_json_response(self.response_json, status=422)
-        else:
-            response = super(CoreFormView, self).form_invalid(form)
-            return response
+        self.response_json["errors"] = form.errors
+        self.response_json["message"] = self.form_error_message
+        return self.render_to_json_response(self.response_json, status=422)
 
     def form_valid(self, form):
         # We make sure to call the parent's form_valid() method because
@@ -118,4 +114,6 @@ class RegistrationView(CoreFormView):
         return HttpResponse("Yes this was executed")
 
     def get(self, request, *args, **kwargs):
-        return HttpResponse('This is a get page')
+        return render_template(request,
+                               "registration.html",
+                               app=settings.APPS['CORE'])

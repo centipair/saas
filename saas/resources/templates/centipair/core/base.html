@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html language="en" ng-app="app">
 
 <head>
   <meta charset="utf-8">
@@ -15,6 +15,7 @@
   <!-- Add custom CSS here -->
   <link href="/core-cdn/css/modern-business.css" rel="stylesheet">
   <link href="/core-cdn/font-awesome/css/font-awesome.min.css" rel="stylesheet">
+  <script src="/core-cdn/js/angular.min.js" type="text/javascript"></script>
 </head>
 
 <body>
@@ -92,23 +93,7 @@
     
     {%endblock%}
   </div>
-  
-  <div class="container">
     
-    <div class="row well">
-      <div class="col-lg-8 col-md-8">
-        <h4>'Modern Business' is a ready-to-use, Bootstrap 3 updated, multi-purpose HTML theme!</h4>
-        <p>For more templates and more page options that you can integrate into this website template, visit Start Bootstrap!</p>
-      </div>
-      <div class="col-lg-4 col-md-4">
-        <a class="btn btn-lg btn-primary pull-right" href="http://startbootstrap.com">See More Templates!</a>
-      </div>
-    </div>
-    <!-- /.row -->
-    
-  </div>
-  <!-- /.container -->
-  
   <div class="container">
     
     <hr>
@@ -122,12 +107,14 @@
     </footer>
     
   </div>
+  {% csrf_token %}
   <!-- /.container -->
   
   <!-- JavaScript -->
   <script src="/core-cdn/js/jquery-1.10.2.js"></script>
   <script src="/core-cdn/js/bootstrap.js"></script>
   <script src="/core-cdn/js/modern-business.js"></script>
+  <script src="/core-cdn/js/app.js"></script>
   
 </body>
 
