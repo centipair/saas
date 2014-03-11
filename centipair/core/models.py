@@ -18,8 +18,30 @@ class Site(models.Model):
     template_dir = models.CharField(max_length=1024)
     is_core = models.BooleanField(default=False)
 
+    def is_editor(self, user):
+        if SiteManager.objects.filter(
+                user=user,
+                role=settings.SITE_ROLES['EDITOR']).exists():
+            return True
+        else:
+            return False
+
+    def is_admin(self, user):
+        if SiteManager.objects.filter(
+                user=user,
+                role=settings.SITE_ROLES['ADMIN']).exists():
+            return True
+        else:
+            return False
+
     def __unicode__(self):
         return u'%s' % (self.name)
+
+
+class SiteManager(models.Model):
+    user = models.ForeignKey(User)
+    site = models.ForeignKey(Site)
+    role = models.CharField(max_length=64)
 
 
 class App(models.Model):

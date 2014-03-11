@@ -2,8 +2,11 @@ from django.utils.translation import ugettext as _
 from django.http import HttpResponse
 from django.shortcuts import redirect
 from django.conf import settings
+from django.views.generic.edit import FormView
 from centipair.core.template_processor import render_template,\
     cdn_file, core_cdn_file
+from centipair.core.forms import RegistrationForm
+import json
 
 
 def core_home(request):
@@ -63,3 +66,56 @@ def cdn_redirect(request, source):
 
 def core_cdn_redirect(request, source):
     return redirect(core_cdn_file(request, source))
+
+
+class CoreFormView(FormView):
+    response_json = {}
+    registration_success_message = _("Registration success. Please activate your account by following the instructions we send to your email.")
+    system_error_message = _("System error.Please try again after sometime")
+    form_error_message = _("Submitted data is invalid.")
+
+    def render_to_json_response(self, context, **response_kwargs):
+        data = json.dumps(context)
+        response_kwargs['content_type'] = 'application/json'
+        return HttpResponse(data, **response_kwargs)
+
+    def form_invalid(self, form):
+        if self.request.is_ajax():
+            self.response_json["errors"] = form.errors
+            self.response_json["message"] = self.form_error_message
+            return self.render_to_json_response(self.response_json, status=422)
+        else:
+            response = super(CoreFormView, self).form_invalid(form)
+            return response
+
+    def form_valid(self, form):
+        # We make sure to call the parent's form_valid() method because
+        # it might do some processing (in the case of CreateView, it will
+        # call form.save() for example).
+        print("form valid")
+        try:
+            return self.execute(form)
+        except:
+            self.response_json["status"] = 500
+            self.response_json["message"] = self.system_error_message
+            #TODO: Log this error for future debugging
+        self.response_json["status"] = 200
+        self.response_json["message"] = self.registration_success_message
+
+    def execute(self, form):
+        """
+        This method will be overridden in inherited Class
+        Business logic can be put here.
+        """
+        return
+
+
+class RegistrationView(CoreFormView):
+    form_class = RegistrationForm
+    template_name = settings.CORE_TEMPLATE_PATH + '/registration.html'
+
+    def execute(self, form):
+        return HttpResponse("Yes this was executed")
+
+    def get(self, request, *args, **kwargs):
+        return HttpResponse('This is a get page')

@@ -151,3 +151,6 @@ APPS = {'CORE': 'core',
         'SUPPORT': 'support'}
 
 DEFAULT_APP = APPS['CORE']
+
+SITE_ROLES = {'EDITOR': 'editor',
+              'ADMIN': 'admin'}
