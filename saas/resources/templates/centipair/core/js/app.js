@@ -10,19 +10,32 @@ app.factory("callbacks", function(){
     return {"hello":"world"}
 });
 
-function redirect(url){
-    window.location.href=url;
+app.factory("Alert", function(){
+    return {"message": "" ,"class":""};
+});
+
+
+app.directive("submit", function(){
+    return function (scope, element, attrs){
+	element.bind("click", function (){
+	    scope.submitForm(attrs.url);
+	})
+    }
+});
+
+
+
+function AlertCtrl($scope, Alert){
+    $scope.alert = Alert;
 }
 
-function invalidAction(){
-    console.log("Submit success.Invalid action sepcified");
-}
 
-function SubmitCtrl($scope, $http){
+
+function SubmitCtrl($scope, $http, Alert){
     $scope.errors = {};
-    $scope.showForm = true;
     $scope.form = {}
     $scope.allErrors = false;
+    $scope.alert = Alert;
     $scope.handleSuccess = function(data){
 	if (data.action){
 	    switch (data.action){
@@ -37,13 +50,12 @@ function SubmitCtrl($scope, $http){
     $scope.callbackFunction = function(){
 	console.log("scope callback")
     }
-    $scope.submit=function(url, showResult){
+    $scope.submitForm=function(url){
 	$scope.errors = {};
-	console.log($scope.form);
-	//$scope.form["csrfmiddlewaretoken"] = document.getElementsByName('csrfmiddlewaretoken')[0].value;
-	submit_data = $scope.form
+	$scope.alert.class = "";
+	$scope.alert.message = "";
+	submit_data = $scope.form;
 	submit_data["csrfmiddlewaretoken"] = document.getElementsByName('csrfmiddlewaretoken')[0].value;
-	console.log(submit_data);
 	$http(
 	    {url: url, 
 	     data: $.param(submit_data),
@@ -51,21 +63,26 @@ function SubmitCtrl($scope, $http){
 	     headers : {'Content-Type':'application/x-www-form-urlencoded; charset=UTF-8'}
 	    }).success(function (data) {
 		console.log(data);
-		if (showResult){
-		    $scope.showForm = false;
-		    $scope.showSubmitResult = true;
-		}
+		
 	    }).error(function(data, status, headers, config) {
 		// called asynchronously if an error occurs
 		// or server returns response with an error status.
 		if (status==422){
-		    errors = data.errors;
+		    errors = {};
+		    $scope.alert.message = data.message;
+		    $scope.alert.class = "alert-danger";
 		    for(var index in data.errors) {
+			console.log(index);
 			errors[index + "Class"] = "has-error";
+			error_string = "";
+			for(var i=0;i<data.errors[index].length;i++){
+			    error_string = error_string + data.errors[index][i] ;
+			}
+			errors[index] = error_string;
 		    }
 		    $scope.errors = errors;
-		    $scope.all_errors = '__all__' in data.errors;
-		    console.log($scope.errors);
+		    $scope.allErrors = '__all__' in data.errors;
+		    
 		}else if (status==500){
 		    alert("server error");
 		}
