@@ -7,31 +7,13 @@
       <div ng-show="allErrors" class="form-group has-error">
 	<label class="control-label">[{errors.__all__}]</label>
       </div>
-      <div class="form-group [{errors.usernameClass}]">
-	<label for="username">Username</label>
-	<input type="text" class="form-control" id="username" placeholder="Username" ng-model="form.username">
-	<label class="control-label">[{errors.username}]</label>
-      </div>
-      <div class="form-group [{errors.password1Class}]" >
-	<label for="password1">Password</label>
-	<input type="password" class="form-control" id="password1" placeholder="Password" ng-model="form.password1">
-	<label class="control-label">[{errors.password1}]</label>
-      </div>
-      <div class="form-group [{errors.password2Class}]" >
-	<label for="password2">Confirm Password</label>
-	<input type="password" class="form-control" id="password2" placeholder="Password" ng-model="form.password2">
-	<label class="control-label">[{errors.password2}]</label>
-      </div>
-      <div class="form-group [{errors.emailClass}]" >
-	<label for="email">Email address</label>
-	<input type="text" class="form-control" id="email" placeholder="Enter email" ng-model="form.email">
-	<label class="control-label">[{errors.email}]</label>
-      </div>
-      <div class="form-group [{errors.tosClass}]">
-	<label for="tos">Accept terms of condition </label>
-	<input type="checkbox" class="form-control" id="tos" value="true" ng-model="form.tos">
-	<label class="control-label">[{errors.tos}]</label>
-      </div>
+      {{form.username}}
+      {{form.email}}
+      {{form.password1}}
+      {{form.password2}}
+      {{form.email}}
+      {{form.tos}}
+      {{form.check}}
       <button submit url="/register" class="btn btn-primary">Register</button>
     <form>
   </div>

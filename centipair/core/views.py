@@ -114,6 +114,8 @@ class RegistrationView(CoreFormView):
         return HttpResponse("Yes this was executed")
 
     def get(self, request, *args, **kwargs):
+        form = RegistrationForm()
         return render_template(request,
                                "registration.html",
+                               context={"form": form},
                                app=settings.APPS['CORE'])

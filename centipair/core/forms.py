@@ -2,9 +2,41 @@ from django.contrib.auth.models import User
 from django.utils.translation import ugettext_lazy as _
 from django import forms
 from django.conf import settings
+from django.utils.safestring import mark_safe
 from PIL import Image, ImageOps
 import os
 from centipair.core.utilities import unique_name
+
+
+class AngularInput(forms.Widget):
+    def __init__(self, *args, **kwargs):
+        """A widget that displays JSON Key Value Pairs
+        as a list of text input box pairs
+
+        kwargs:
+        key_attrs -- html attributes applied to the 1st input box pairs
+        val_attrs -- html attributes applied to the 2nd input box pairs
+
+        """
+
+        self.label = ""
+        self.input_type = "text"
+        self.placeholder = ""
+        if "label" in kwargs:
+            self.label = kwargs.pop("label")
+        if "input_type" in kwargs:
+            self.input_type = kwargs.pop("input_type")
+        if "placeholder" in kwargs:
+            self.placeholder = kwargs.pop("placeholder")
+        self.ng_init = ""
+
+        super(AngularInput, self).__init__(*args, **kwargs)
+
+    def render(self, name, value, attrs=None):
+        if value:
+            self.ng_init = "ng-init=\"form.%s='%s'\"" % (name, value)
+        template = '<div class="form-group [{errors.%(name)sClass}]" ><label for="%(name)s">%(label)s</label><input type="%(input_type)s" class="form-control" id="%(name)s" placeholder="%(placeholder)s" ng-model="form.%(name)s" %(ng_init)s><label class="control-label">[{errors.%(name)s}]</label></div>' % {"label": self.label, "placeholder": self.placeholder, "input_type": self.input_type, "name": name, "ng_init": self.ng_init}
+        return mark_safe(template)
 
 
 class ImageForm(forms.Form):
@@ -83,19 +115,33 @@ class RegistrationForm(forms.Form):
     required_css_class = 'required'
 
     username = forms.RegexField(
+        widget=AngularInput(label=_("Username"),
+                            placeholder=_("Username")),
         regex=r'^[\w.@+-]+$',
         max_length=30,
         label=_("Username"),
         error_messages={'invalid': _("This value may contain only letters, numbers and @/./+/-/_ characters.")})
-    email = forms.EmailField(label=_("E-mail"))
-    password1 = forms.CharField(widget=forms.PasswordInput,
-                                label=_("Password"))
-    password2 = forms.CharField(widget=forms.PasswordInput,
-                                label=_("Password (again)"))
+    email = forms.EmailField(widget=AngularInput(
+        label=_("Email"),
+        placeholder=_("Email")))
+    password1 = forms.CharField(widget=AngularInput(
+        label=_("Password"),
+        placeholder=_("Password"),
+        input_type="password"
+    ))
+    password2 = forms.CharField(widget=AngularInput(
+        label=_("Confirm Password"),
+        placeholder=_("Password again"),
+        input_type="password"
+    ))
 
-    tos = forms.BooleanField(widget=forms.CheckboxInput,
-                             label=_(u'I have read and agree to the Terms of Service'),
-                             error_messages={'required': _("You must agree to the terms to register")})
+    tos = forms.BooleanField(
+        widget=AngularInput(
+            label=_("I have read and agree to the Terms of Service"),
+            input_type="checkbox"
+        ),
+        label=_(u'I have read and agree to the Terms of Service'),
+        error_messages={'required': _("You must agree to the terms to register")})
 
     def clean_username(self):
         """
