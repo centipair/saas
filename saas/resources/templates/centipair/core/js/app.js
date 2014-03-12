@@ -14,6 +14,10 @@ app.factory("Alert", function(){
     return {"message": "" ,"class":""};
 });
 
+app.factory("Loader", function(){
+    return {show:false, message:""};
+})
+
 
 app.directive("submit", function(){
     return function (scope, element, attrs){
@@ -29,28 +33,21 @@ function AlertCtrl($scope, Alert){
     $scope.alert = Alert;
 }
 
+function LoaderCtrl($scope, Loader){
+    $scope.loader = Loader;
+}
 
 
-function SubmitCtrl($scope, $http, Alert){
+
+function SubmitCtrl($scope, $http, Alert, Loader){
     $scope.errors = {};
     $scope.form = {}
     $scope.allErrors = false;
     $scope.alert = Alert;
-    $scope.handleSuccess = function(data){
-	if (data.action){
-	    switch (data.action){
-		case "redirect":
-		redirect(data.url);
-		break;
-		default:
-		invalidAction();
-	    }
-	}
-    }
-    $scope.callbackFunction = function(){
-	console.log("scope callback")
-    }
+    $scope.loader = Loader;
+    
     $scope.submitForm=function(url){
+	$scope.loader.show=true;
 	$scope.errors = {};
 	$scope.alert.class = "";
 	$scope.alert.message = "";
@@ -62,17 +59,17 @@ function SubmitCtrl($scope, $http, Alert){
 	     method: 'POST',
 	     headers : {'Content-Type':'application/x-www-form-urlencoded; charset=UTF-8'}
 	    }).success(function (data) {
-		console.log(data);
+		$scope.loader.show=false;
 		
 	    }).error(function(data, status, headers, config) {
 		// called asynchronously if an error occurs
 		// or server returns response with an error status.
+		$scope.loader.show=false;
 		if (status==422){
 		    errors = {};
 		    $scope.alert.message = data.message;
 		    $scope.alert.class = "alert-danger";
 		    for(var index in data.errors) {
-			console.log(index);
 			errors[index + "Class"] = "has-error";
 			error_string = "";
 			for(var i=0;i<data.errors[index].length;i++){

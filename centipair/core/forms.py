@@ -10,13 +10,13 @@ from centipair.core.utilities import unique_name
 
 class AngularInput(forms.Widget):
     def __init__(self, *args, **kwargs):
-        """A widget that displays JSON Key Value Pairs
-        as a list of text input box pairs
+        """A widget that can be used as AngularJs web input
 
         kwargs:
-        key_attrs -- html attributes applied to the 1st input box pairs
-        val_attrs -- html attributes applied to the 2nd input box pairs
-
+        label -- label for the input
+        input_type -- type of input (text, checkbox, password..etc)
+        default input type is text
+        placeholder -- html place holder value
         """
 
         self.label = ""

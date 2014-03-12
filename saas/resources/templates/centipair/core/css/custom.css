@@ -1,0 +1,15 @@
+.loader-message {
+    position: fixed;
+    top: 5%;
+    left: 50%;
+    margin-left: -150px;
+    width: 150px;
+    z-index: 9999;
+    background-color: #f9edbe;
+    border-color: #f0c36d;
+    text-align:center;
+    font-weight:bold;
+    top:8px;
+    padding:3px 0px 3px 0px;
+    
+}
