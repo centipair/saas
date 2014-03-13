@@ -1,5 +1,5 @@
 from django.conf.urls import patterns, include, url
-from centipair.core.views import RegistrationView
+from centipair.core.views import RegistrationView, LoginView
 
 from django.contrib import admin
 admin.autodiscover()
@@ -11,6 +11,7 @@ urlpatterns = patterns(
     # url(r'^blog/', include('blog.urls')),
     url(r'^$', 'centipair.core.views.home', name='home'),
     url(r'^register$', RegistrationView.as_view(), name='registration'),
+    url(r'^account/login$', LoginView.as_view(), name='login'),
     url(r'^pricing$', 'centipair.core.views.core_pricing', name='pricing'),
     url(r'^cdn/(?P<source>.+)$', 'centipair.core.views.cdn_redirect',
         name='cdn_redirect'),

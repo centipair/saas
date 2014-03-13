@@ -6,10 +6,6 @@ app.config(function($interpolateProvider, $httpProvider) {
     
 });
 
-app.factory("callbacks", function(){
-    return {"hello":"world"}
-});
-
 app.factory("Alert", function(){
     return {"message": "" ,"class":""};
 });
@@ -166,6 +162,14 @@ app.controller('RegisterCtrl', function($scope, $controller){
     $controller('SubmitCtrl', {$scope:$scope});
     $scope.callback = function(data){
 	console.log("register control callback");
+	console.log(data);
+    }
+});
+
+app.controller('LoginCtrl', function($scope, $controller){
+    $controller('SubmitCtrl', {$scope:$scope});
+    $scope.callback = function(data){
+	console.log("login control callback");
 	console.log(data);
     }
 });

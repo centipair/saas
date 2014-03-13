@@ -1,0 +1,16 @@
+{%extends "centipair/core/base.html"%}
+{%block content%}
+<h2>Login</h2>
+<div class="row">
+  <div class="col-md-4">
+    <form ng-controller="LoginCtrl">
+      <div ng-show="allErrors" class="form-group has-error">
+	<label class="control-label">[{errors.__all__}]</label>
+      </div>
+      {{form.username}}
+      {{form.password}}
+      <button submit url="/account/login" class="btn btn-primary">Login</button>
+    <form>
+  </div>
+</div>
+{%endblock%}

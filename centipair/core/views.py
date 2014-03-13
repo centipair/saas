@@ -5,7 +5,7 @@ from django.conf import settings
 from django.views.generic.edit import FormView
 from centipair.core.template_processor import render_template,\
     cdn_file, core_cdn_file
-from centipair.core.forms import RegistrationForm
+from centipair.core.forms import RegistrationForm, LoginForm
 import json
 
 
@@ -99,23 +99,39 @@ class CoreFormView(FormView):
 
     def execute(self, form):
         """
-        This method will be overridden in inherited Class
+        This method can be overridden in inherited Class
         Business logic can be put here.
         """
-        return
+        return HttpResponse(_(self.success_message))
 
 
 class RegistrationView(CoreFormView):
     form_class = RegistrationForm
-    template_name = settings.CORE_TEMPLATE_PATH + '/registration.html'
+    template_name = settings.CORE_TEMPLATE_PATH + '/registration_form.html'
     success_message = _("Registration success. Please activate your account by following the instructions we send to your email.")
 
     def execute(self, form):
-        return HttpResponse("Yes this was executed")
+        return HttpResponse(_(self.success_message))
 
     def get(self, request, *args, **kwargs):
         form = RegistrationForm()
         return render_template(request,
-                               "registration.html",
+                               "registration_form.html",
                                context={"form": form},
                                app=settings.APPS['CORE'])
+
+
+class LoginView(CoreFormView):
+    form_class = LoginForm
+    template_name = settings.CORE_TEMPLATE_PATH + '/login_form.html'
+    success_message = _("Login success")
+
+    def get(self, request, *args, **kwargs):
+        form = LoginForm()
+        return render_template(request,
+                               "login_form.html",
+                               context={"form": form},
+                               app=settings.APPS['CORE'])
+
+    def execute(self, form):
+        return HttpResponse(_(self.success_message))

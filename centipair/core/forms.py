@@ -211,3 +211,19 @@ class RegistrationFormNoFreeEmail(RegistrationForm):
         if email_domain in self.bad_domains:
             raise forms.ValidationError(_("Registration using free email addresses is prohibited. Please supply a different email address."))
         return self.cleaned_data['email']
+
+
+class LoginForm(forms.Form):
+    username = forms.RegexField(
+        widget=AngularInput(label=_("Username"),
+                            placeholder=_("Username")),
+        regex=r'^[\w.@+-]+$',
+        max_length=30,
+        label=_("Username"),
+        error_messages={'invalid': _("This value may contain only letters, numbers and @/./+/-/_ characters.")})
+
+    password = forms.CharField(widget=AngularInput(
+        label=_("Password"),
+        placeholder=_("Password"),
+        input_type="password"
+    ))
