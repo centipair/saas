@@ -3,12 +3,11 @@
 <h2>New account registration</h2>
 <div class="row">
   <div class="col-md-4">
-    <form ng-controller="SubmitCtrl">
+    <form ng-controller="RegisterCtrl">
       <div ng-show="allErrors" class="form-group has-error">
 	<label class="control-label">[{errors.__all__}]</label>
       </div>
       {{form.username}}
-      {{form.email}}
       {{form.password1}}
       {{form.password2}}
       {{form.email}}
