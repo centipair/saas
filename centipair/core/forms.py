@@ -5,7 +5,8 @@ from django.conf import settings
 from django.utils.safestring import mark_safe
 from PIL import Image, ImageOps
 import os
-from centipair.core.utilities import unique_name
+from centipair.core.utilities import unique_name, generate_username
+from centipair.core.models import Site, SiteUser
 
 
 class AngularInput(forms.Widget):
@@ -143,19 +144,44 @@ class RegistrationForm(forms.Form):
         label=_(u'I have read and agree to the Terms of Service'),
         error_messages={'required': _("You must agree to the terms to register")})
 
+    def __init__(self, *args, **kwargs):
+        self.request = kwargs.pop('request', None)
+        super(RegistrationForm, self).__init__(*args, **kwargs)
+
     def clean_username(self):
         """
         Validate that the username is alphanumeric and is not already
         in use.
 
         """
-        existing = User.objects.filter(
-            username__iexact=self.cleaned_data['username'])
+        site = Site.objects.get(pk=self.request.site.id)
+        existing = SiteUser.objects.filter(
+            username__iexact=self.cleaned_data['username'],
+            site=site
+        )
+
         if existing.exists():
             raise forms.ValidationError(
                 _("A user with that username already exists."))
         else:
             return self.cleaned_data['username']
+
+    def clean_email(self):
+        """
+        Validate that the supplied email address is unique for the
+        site.
+
+        """
+        site = Site.objects.get(pk=self.request.site.id)
+        existing = SiteUser.objects.filter(
+            email__iexact=self.cleaned_data['email'],
+            site=site
+        )
+        if existing.exists():
+            raise forms.ValidationError(
+                _("This email address is already in use. Please supply a different email address."))
+        else:
+            return self.cleaned_data['email']
 
     def clean(self):
         """
@@ -168,22 +194,6 @@ class RegistrationForm(forms.Form):
             if self.cleaned_data['password1'] != self.cleaned_data['password2']:
                 raise forms.ValidationError(_("The two password fields didn't match."))
         return self.cleaned_data
-
-
-class RegistrationFormUniqueEmail(RegistrationForm):
-    """
-    Subclass of ``RegistrationForm`` which enforces uniqueness of
-    email addresses.
-    """
-    def clean_email(self):
-        """
-        Validate that the supplied email address is unique for the
-        site.
-
-        """
-        if User.objects.filter(email__iexact=self.cleaned_data['email']):
-            raise forms.ValidationError(_("This email address is already in use. Please supply a different email address."))
-        return self.cleaned_data['email']
 
 
 class RegistrationFormNoFreeEmail(RegistrationForm):

@@ -29,12 +29,16 @@ class SiteUserMirror(object):
 
 
 class SiteMirror(object):
+    """
+    Class for site object used in request
+    Instance contains site and Site User details
+    """
     def __init__(self, request, *args, **kwargs):
         self.exists = False
         site = self.get_site(request)
         if not site:
             return
-
+        self.id = site.id
         self.exists = True
         self.name = site.name
         self.domain_name = site.domain_name

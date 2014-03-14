@@ -10,6 +10,7 @@ import os
 import re
 import base64
 
+
 us_states = ["Alabama",
              "Alaska",
              "Arizona",
@@ -79,6 +80,10 @@ def unique_name(mixer):
     salt = hashlib.sha256(str(random.random())).hexdigest()[:10]
     key = hashlib.sha256(salt + mixer).hexdigest()
     return key
+
+
+def generate_username(username):
+    return unique_name(username)[:30]
 
 
 def send_activation_email(email, key):

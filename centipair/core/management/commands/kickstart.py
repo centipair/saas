@@ -1,9 +1,21 @@
 from __future__ import print_function
 from django.core.management.base import BaseCommand, CommandError
-from centipair.core.models import Site, App
 from django.contrib.auth.models import User
 from django.conf import settings
 from django.utils.translation import ugettext as _
+from centipair.core.models import Site, App, SiteUser
+from centipair.core.utilities import generate_username
+
+
+def create_site_user(username, site, role):
+    site_user = SiteUser.objects.get_or_create(
+        username=username,
+        email=site.user.email,
+        site=site,
+        role=role,
+        user=site.user
+    )
+    return site_user
 
 
 def localhost_user():
@@ -36,6 +48,7 @@ def create_localhost():
     if created:
         print (_("Local site created"))
     site.save()
+    create_site_user("admin", site, settings.SITE_ROLES['ADMIN'])
 
 
 def create_store_app(site):
@@ -69,7 +82,7 @@ def create_store_app(site):
 
 def store_user():
     user, created = User.objects.get_or_create(
-        username="seller",
+        username=generate_username("seller"),
         email="devasiajosephtest@gmail.com")
     user.set_password('password')
     user.save()
@@ -95,6 +108,7 @@ def create_test_store():
     if created:
         print (_("New store created"))
     create_store_app(site)
+    create_site_user("seller", site, settings.SITE_ROLES["ADMIN"])
     return
 
 

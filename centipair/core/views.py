@@ -74,6 +74,11 @@ class CoreFormView(FormView):
     system_error_message = _("System error.Please try again after sometime")
     form_error_message = _("Submitted data is invalid.")
 
+    def get_form_kwargs(self):
+        kwargs = super(CoreFormView, self).get_form_kwargs()
+        kwargs['request'] = self.request
+        return kwargs
+
     def render_to_json_response(self, context, **response_kwargs):
         data = json.dumps(context)
         response_kwargs['content_type'] = 'application/json'
