@@ -6,9 +6,6 @@ app.config(function($interpolateProvider, $httpProvider) {
     
 });
 
-app.factory("Alert", function(){
-    return {message: "" ,class:""};
-});
 
 app.factory("Notifier", function(){
     return {show:false, message:"Loading...", class:"notify-loading"};
@@ -64,7 +61,6 @@ function SubmitCtrl($scope, $http, Notifier, PostData){
     $scope.data = {};
     $scope.notify = function(code, message){
 	var show = true;
-	
 	switch (code)
 	{
 	    case 102:
