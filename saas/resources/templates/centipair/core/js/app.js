@@ -7,11 +7,11 @@ app.config(function($interpolateProvider, $httpProvider) {
 });
 
 app.factory("Alert", function(){
-    return {"message": "" ,"class":""};
+    return {message: "" ,class:""};
 });
 
-app.factory("Loader", function(){
-    return {show:false, message:""};
+app.factory("Notifier", function(){
+    return {show:false, message:"Loading...", class:"notify-loading"};
 })
 
 app.service("Callback", function(){
@@ -20,7 +20,7 @@ app.service("Callback", function(){
     };
 });
 
-app.service("PostData", function($http, $q, Alert, Loader){
+app.service("PostData", function($http, $q, Notifier){
     
     return {submitForm: function(url, data){
 	var deferred = $q.defer();
@@ -30,7 +30,6 @@ app.service("PostData", function($http, $q, Alert, Loader){
 	     method: 'POST',
 	     headers : {'Content-Type':'application/x-www-form-urlencoded; charset=UTF-8'}
 	    }).error(function (data, status) {
-		Loader.show=false;
 		response = {data: data, status: status};
 		deferred.reject(response);
 		
@@ -52,45 +51,75 @@ app.directive("submit", function(){
 });
 
 
-
-function AlertCtrl($scope, Alert){
-    $scope.alert = Alert;
-}
-
-function LoaderCtrl($scope, Loader){
-    $scope.loader = Loader;
+function NotifierCtrl($scope, Notifier){
+    $scope.notifier = Notifier;
 }
 
 
 
-function SubmitCtrl($scope, $http, Alert, Loader, PostData){
+function SubmitCtrl($scope, $http, Notifier, PostData){
     $scope.errors = {};
     $scope.form = {}
     $scope.allErrors = false;
-    $scope.alert = Alert;
-    $scope.loader = Loader;
     $scope.data = {};
-    $scope.callback = function(data){
+    $scope.notify = function(code, message){
+	var show = true;
+	
+	switch (code)
+	{
+	    case 102:
+	    Notifier.class = "notify-loading";
+	    break;
+	    case 404:
+	    Notifier.class = "notify-error";
+	    Notifier.message = "Requested resource not found";
+	    break;
+	    case 500:
+	    Notifier.class = "notify-error";
+	    Notifier.message = "Server error. Please try again after sometime";
+	    break;
+	    case 422:
+	    Notifier.class = "notify-error";
+	    Notifier.message = "Submitted data is invalid";
+	    break;
+	    case 403:
+	    Notifier.class = "notify-error";
+	    Notifier.message = "Permission denied for this process";
+	    break;
+	    case 200:
+	    console.log("200 ok");
+	    console.log(message);
+	    show = false;
+	    break;
+	    default:
+	    Notifier.class = "notify-loading";
+	    Notifier.message = "Unknown response";
+	    
+	}
+	if (message != undefined){
+	    Notifier.message = message;
+	}
+	Notifier.show = show;
+	
     };
     $scope.submitFormService=function(url){
-	Loader.show=true;
+	$scope.notify(102, "Loading...")
 	$scope.errors = {};
-	$scope.alert.class = "";
-	$scope.alert.message = "";
 	submit_data = $scope.form;
 	submit_data["csrfmiddlewaretoken"] = document.getElementsByName('csrfmiddlewaretoken')[0].value;
 	$scope.response  = PostData.submitForm(url, $.param(submit_data)).then(
 	    function (data){
-		$scope.loader.show=false;
+		//this is success data
+		$scope.notify(200)
 		$scope.callback(data);
 	    },
 	    function (data){
+		//this is invoked during error
 		data = response.data;
 		status = response.status;
 		if (status==422){
+		    $scope.notify(422, data.message)
 		    errors = {};
-		    $scope.alert.message = data.message;
-		    $scope.alert.class = "alert-danger";
 		    for(var index in data.errors) {
 			errors[index + "Class"] = "has-error";
 			error_string = "";
@@ -103,8 +132,7 @@ function SubmitCtrl($scope, $http, Alert, Loader, PostData){
 		    $scope.allErrors = '__all__' in data.errors;
 		    
 		}else if (status==500){
-		    $scope.loader.show=false;
-		    alert("server error");
+		    $scope.notify(500);
 		}
 		
 	    }
@@ -112,50 +140,6 @@ function SubmitCtrl($scope, $http, Alert, Loader, PostData){
 	
     };
     
-    $scope.submitForm=function(url){
-	$scope.loader.show=true;
-	$scope.errors = {};
-	$scope.alert.class = "";
-	$scope.alert.message = "";
-	submit_data = $scope.form;
-	submit_data["csrfmiddlewaretoken"] = document.getElementsByName('csrfmiddlewaretoken')[0].value;
-	$http(
-	    {url: url, 
-	     data: $.param(submit_data),
-	     method: 'POST',
-	     headers : {'Content-Type':'application/x-www-form-urlencoded; charset=UTF-8'}
-	    }).success(function (data) {
-		$scope.loader.show=false;
-		
-	    }).error(function(data, status, headers, config) {
-		// called asynchronously if an error occurs
-		// or server returns response with an error status.
-		$scope.data = data;
-		$scope.$apply("registrationSuccess");
-		$scope.loader.show=false;
-		$scope.data = data;
-		if (status==422){
-		    errors = {};
-		    $scope.alert.message = data.message;
-		    $scope.alert.class = "alert-danger";
-		    for(var index in data.errors) {
-			errors[index + "Class"] = "has-error";
-			error_string = "";
-			for(var i=0;i<data.errors[index].length;i++){
-			    error_string = error_string + data.errors[index][i] ;
-			}
-			errors[index] = error_string;
-		    }
-		    $scope.errors = errors;
-		    $scope.allErrors = '__all__' in data.errors;
-		    
-		}else if (status==500){
-		    alert("server error");
-		}
-		
-	    });
-	
-    };
 }
 
 app.controller('RegisterCtrl', function($scope, $controller){

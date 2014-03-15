@@ -24,6 +24,7 @@ class Site(models.Model):
 
 class SiteUser(models.Model):
     username = models.CharField(max_length=30)
+    email = models.CharField(max_length=1024)
     user = models.ForeignKey(User)
     site = models.ForeignKey(Site)
     role = models.CharField(max_length=64)

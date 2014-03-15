@@ -1,8 +1,8 @@
-from django.contrib.auth.models import User
 from django.utils.translation import ugettext_lazy as _
 from django import forms
 from django.conf import settings
 from django.utils.safestring import mark_safe
+from django.forms.util import ErrorList
 from PIL import Image, ImageOps
 import os
 from centipair.core.utilities import unique_name, generate_username
@@ -190,9 +190,14 @@ class RegistrationForm(forms.Form):
         ``non_field_errors()`` because it doesn't apply to a single
         field.
         """
-        if 'password1' in self.cleaned_data and 'password2' in self.cleaned_data:
-            if self.cleaned_data['password1'] != self.cleaned_data['password2']:
-                raise forms.ValidationError(_("The two password fields didn't match."))
+        if 'password1' in self.cleaned_data and 'password2' in \
+           self.cleaned_data:
+            if self.cleaned_data['password1'] != self.\
+               cleaned_data['password2']:
+                self._errors["password2"] = ErrorList(
+                    [u"The two password fields didn't match."])
+                raise forms.ValidationError(
+                    _("The two password fields didn't match."))
         return self.cleaned_data
 
 
@@ -224,6 +229,10 @@ class RegistrationFormNoFreeEmail(RegistrationForm):
 
 
 class LoginForm(forms.Form):
+    def __init__(self, *args, **kwargs):
+        self.request = kwargs.pop('request', None)
+        super(LoginForm, self).__init__(*args, **kwargs)
+
     username = forms.RegexField(
         widget=AngularInput(label=_("Username"),
                             placeholder=_("Username")),

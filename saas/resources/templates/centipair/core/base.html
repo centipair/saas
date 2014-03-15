@@ -90,12 +90,9 @@
     </div>
     <!-- /.container -->
   </nav>
-  <div ng-controller="AlertCtrl" class="alert [{alert.class}]">
-    [{alert.message}]
-  </div>
   
-  <div ng-controller="LoaderCtrl" class="loader-message" ng-show="loader.show">
-    Loading...
+  <div ng-controller="NotifierCtrl" class="notify [{notifier.class}]" ng-show="notifier.show"  ng-cloak>
+    [{notifier.message}]
   </div>
   <div class="container">
     {%block content%}
