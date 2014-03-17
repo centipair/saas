@@ -3,6 +3,7 @@ from django.http import HttpResponse
 from django.shortcuts import redirect
 from django.conf import settings
 from django.views.generic.edit import FormView
+from django.views.generic.base import View
 from centipair.core.template_processor import render_template,\
     cdn_file, core_cdn_file
 from centipair.core.forms import RegistrationForm, LoginForm
@@ -47,7 +48,6 @@ def user_site_home(request):
 
 
 def home(request):
-    print request.site.apps
     if request.site.is_core:
         return core_home(request)
     else:
@@ -69,6 +69,12 @@ def core_cdn_redirect(request, source):
     return redirect(core_cdn_file(request, source))
 
 
+class CoreView(View):
+
+    def get(self):
+        return
+
+
 class CoreFormView(FormView):
     response_json = {}
     success_message = _("Success")
@@ -77,7 +83,6 @@ class CoreFormView(FormView):
 
     def dispatch(self, *args, **kwargs):
         if self.app not in self.request.site.apps:
-            print self.request.site.apps
             return HttpResponse('not found')
         return super(CoreFormView, self).dispatch(*args, **kwargs)
 
