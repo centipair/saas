@@ -47,6 +47,7 @@ def user_site_home(request):
 
 
 def home(request):
+    print request.site.apps
     if request.site.is_core:
         return core_home(request)
     else:
@@ -73,6 +74,12 @@ class CoreFormView(FormView):
     success_message = _("Success")
     system_error_message = _("System error.Please try again after sometime")
     form_error_message = _("Submitted data is invalid.")
+
+    def dispatch(self, *args, **kwargs):
+        if self.app not in self.request.site.apps:
+            print self.request.site.apps
+            return HttpResponse('not found')
+        return super(CoreFormView, self).dispatch(*args, **kwargs)
 
     def get_form_kwargs(self):
         kwargs = super(CoreFormView, self).get_form_kwargs()
@@ -130,6 +137,7 @@ class LoginView(CoreFormView):
     form_class = LoginForm
     template_name = settings.CORE_TEMPLATE_PATH + '/login_form.html'
     success_message = _("Login success")
+    app = settings.APPS['CORE']
 
     def get(self, request, *args, **kwargs):
         form = LoginForm()

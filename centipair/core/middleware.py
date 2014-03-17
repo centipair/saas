@@ -1,5 +1,5 @@
 #from django.http import HttpResponse
-from centipair.core.models import Site, SiteUser
+from centipair.core.models import Site, SiteUser, App
 from django.db.models import Q
 from django.http import HttpResponse
 from django.utils.translation import ugettext as _
@@ -28,6 +28,13 @@ class SiteUserMirror(object):
         return site_user
 
 
+class AppMirror(object):
+    def __init__(self, app_model, *args, **kwargs):
+        self.template_name = app_model.template_name
+        self.template_dir = app_model.template_dir
+        self.app = app_model.app
+
+
 class SiteMirror(object):
     """
     Class for site object used in request
@@ -48,7 +55,9 @@ class SiteMirror(object):
         self.support_domain_name = site.support_domain_name
         self.template_dir = site.template_dir
         self.is_core = site.is_core
+        self.default_app = site.default_app
         self.site_user = SiteUserMirror(request, site)
+        self.apps = self.get_site_apps()
 
     def get_site(self, request):
     #TODO: Implement cache layer.
@@ -63,6 +72,14 @@ class SiteMirror(object):
             return site_obj
         except Site.DoesNotExist:
             return None
+
+    def get_site_apps(self):
+    #TODO: Implement cache layer.
+        site_apps = App.objects.filter(site_id=self.id)
+        apps = {}
+        for each_app in site_apps:
+            apps[each_app.app] = AppMirror(each_app)
+        return apps
 
     def not_found(self):
         return HttpResponse(_('Not found'), status=404)

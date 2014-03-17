@@ -32,6 +32,14 @@ def localhost_user():
     return user
 
 
+def create_core_app(site):
+    app, created = App.objects.get_or_create(
+        template_name='core',
+        template_dir='centipair',
+        site=site,
+        app=settings.APPS['CORE'])
+
+
 def create_localhost():
     site, created = Site.objects.get_or_create(
         name='localhost',
@@ -47,6 +55,7 @@ def create_localhost():
     )
     if created:
         print (_("Local site created"))
+    create_core_app(site)
     site.save()
     create_site_user("admin", site, settings.SITE_ROLES['ADMIN'])
 

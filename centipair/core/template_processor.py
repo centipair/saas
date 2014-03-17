@@ -57,7 +57,7 @@ def render_template(request, template_file, context={}, app=None, base=None):
 
 def render_app_template(request, template_file, context, app, base):
     site = request.site
-    app = App.objects.get(site=request.site, app=app)
+    app = App.objects.get(site_id=request.site.id, app=app)
     template_location = site.template_dir + "/" + app.template_dir +\
         "/" + app.template_name + "/" + template_file
     if context:
