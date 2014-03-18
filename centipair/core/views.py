@@ -4,55 +4,14 @@ from django.shortcuts import redirect
 from django.conf import settings
 from django.views.generic.edit import FormView
 from django.views.generic.base import View
-from centipair.core.template_processor import render_template,\
-    cdn_file, core_cdn_file
+from centipair.core.middleware import render_template,\
+    cdn_file, core_cdn_file, site_home
 from centipair.core.forms import RegistrationForm, LoginForm
 import json
 
 
-def core_home(request):
-    return render_template(request, 'index.html',
-                           app=settings.APPS['CORE'])
-
-
-def cms_home(request):
-    #TODO: render home template and content based on cms settings
-    return render_template(request, 'index.html',
-                           app=settings.APPS['CMS'])
-
-
-def store_home(request):
-    #TODO: render home template and content based on store settings
-    return render_template(request, 'index.html',
-                           app=settings.APPS['STORE'])
-
-
-def blog_home(request):
-    return render_template(request, 'index.html',
-                           app=settings.APPS['BLOG'])
-
-
-def support_home(request):
-    return render_template(request, 'index.html',
-                           app=settings.APPS['SUPPORT'])
-
-
-def user_site_home(request):
-    if request.site.default_app == settings.APPS['CMS']:
-        return cms_home(request)
-    elif request.site.default_app == settings.APPS['STORE']:
-        return store_home(request)
-    else:
-        #TODO: render a nice template
-        return HttpResponse('App not found', status=404)
-
-
 def home(request):
-    if request.site.is_core:
-        return core_home(request)
-    else:
-        return user_site_home(request)
-    return HttpResponse(_('Hello world'))
+    return site_home(request)
 
 
 def core_pricing(request):

@@ -1,8 +1,16 @@
 from django.conf.urls import patterns, include, url
 from centipair.core.views import RegistrationView, LoginView
+from rest_framework import routers
+from centipair.core import api_views
 
-from django.contrib import admin
-admin.autodiscover()
+
+router = routers.DefaultRouter()
+router.register(r'users-urls', api_views.UserViewSet)
+router.register(r'groups', api_views.GroupViewSet)
+
+
+#from django.contrib import admin
+#admin.autodiscover()
 
 urlpatterns = patterns(
     '',
@@ -17,5 +25,7 @@ urlpatterns = patterns(
         name='cdn_redirect'),
     url(r'^core-cdn/(?P<source>.+)$', 'centipair.core.views.core_cdn_redirect',
         name='core_cdn_redirect'),
-    url(r'^admin/', include(admin.site.urls)),
+    #url(r'^admin/', include(admin.site.urls)),
+    url(r'^api/', include(router.urls)),
+    url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework'))
 )

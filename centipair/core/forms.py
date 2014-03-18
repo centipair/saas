@@ -3,6 +3,7 @@ from django import forms
 from django.conf import settings
 from django.utils.safestring import mark_safe
 from django.forms.util import ErrorList
+from django.contrib.auth.models import User
 from PIL import Image, ImageOps
 import os
 from centipair.core.utilities import unique_name, generate_username
@@ -199,6 +200,15 @@ class RegistrationForm(forms.Form):
                 raise forms.ValidationError(
                     _("The two password fields didn't match."))
         return self.cleaned_data
+
+    def register(self):
+        user = User.objects.create(
+            username=generate_username(self.cleaned_data["username"]),
+            email=self.cleaned_data["email"]
+        )
+        user.set_password(self.cleaned_data["password"])
+
+        return
 
 
 class RegistrationFormNoFreeEmail(RegistrationForm):

@@ -3,6 +3,92 @@ from centipair.core.models import Site, SiteUser, App
 from django.db.models import Q
 from django.http import HttpResponse
 from django.utils.translation import ugettext as _
+from django.shortcuts import render
+from django.conf import settings
+
+
+def user_site_home(request):
+    if request.site.default_app == settings.APPS['CMS']:
+        return cms_home(request)
+    elif request.site.default_app == settings.APPS['STORE']:
+        return store_home(request)
+    else:
+        #TODO: render a nice template
+        return HttpResponse('App not found', status=404)
+
+
+def site_home(request):
+    if request.site.is_core:
+        return core_home(request)
+    else:
+        return user_site_home(request)
+    return HttpResponse(_('Hello world'))
+
+
+def cdn_file(request, source):
+    site = request.site
+    template_path = site.template_dir + "/cdn/" + source
+    source_file_url = settings.TEMPLATE_STATIC_URL + "/" + template_path
+    return source_file_url
+
+
+def core_cdn_file(request, source):
+    source_file_url = settings.TEMPLATE_STATIC_URL + "/" +\
+        settings.CORE_TEMPLATE_PATH + "/" + source
+    return source_file_url
+
+
+def get_base_path(request, base_file):
+    site = request.site
+    if site.is_core:
+        base_path = settings.CORE_TEMPLATE_PATH + "/" +\
+            site.template_dir + "/" + base_file
+    else:
+        base_path = site.template_dir + "/" + site.template_name + "/" +\
+            base_file
+    return base_path
+
+
+def render_core_template(request, template_file, context):
+    """Renders core templates """
+    template_location = settings.CORE_TEMPLATE_PATH + "/" + template_file
+    return render(request, template_location, context)
+
+
+def render_cms_template(request, template_file, context):
+    """Renders core templates """
+    site = request.site
+    template_dir = settings.CMS_TEMPLATE_PATH + "/" + site.template_name + "/"
+    template_location = template_dir + template_file
+
+    return render(request, template_location, context)
+
+
+def render_template(request, template_file, context={}, app=None, base=None):
+    """Renders template based on the site"""
+
+    if app:
+        if app == settings.APPS['CORE']:
+            return render_core_template(request, template_file, context)
+        else:
+            return render_app_template(request, template_file, context,
+                                       app, base)
+    else:
+        return render_core_template(request, "app_error.html", context)
+
+
+def render_app_template(request, template_file, context, app, base):
+    site = request.site
+    app = App.objects.get(site_id=request.site.id, app=app)
+    template_location = site.template_dir + "/" + app.template_dir +\
+        "/" + app.template_name + "/" + template_file
+    if context:
+        context["centipair_base_template"] = base
+    else:
+        context = {}
+        context["centipair_base_template"] = base
+
+    return render(request, template_location, context)
 
 
 class SiteUserMirror(object):
@@ -98,3 +184,31 @@ class SiteMiddleware:
 class ApiMiddleware:
     def process_request(self, request):
         return
+
+
+def core_home(request):
+    return render_template(request, 'index.html',
+                           app=settings.APPS['CORE'])
+
+
+def cms_home(request):
+    #TODO: render home template and content based on cms settings
+    return render_template(request, 'index.html',
+                           app=settings.APPS['CMS'])
+
+
+def store_home(request):
+    #TODO: render home template and content based on store settings
+    return render_template(request, 'index.html',
+                           app=settings.APPS['STORE'])
+
+
+def blog_home(request):
+    return render_template(request, 'index.html',
+                           app=settings.APPS['BLOG'])
+
+
+def support_home(request):
+    return render_template(request, 'index.html',
+                           app=settings.APPS['SUPPORT'])
+
