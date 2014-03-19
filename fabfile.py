@@ -16,7 +16,7 @@ def manage(command):
 
 
 def create_test_fixture(app):
-    local('rm -f ' + app + '/fixtures/test_data.json')
+    local('rm -f ' + app_path(app) + '/fixtures/test_data.json')
     local('python manage.py  dumpdata -e contenttypes >' + app_path(app) +
           '/fixtures/test_data.json --format=json')
 

@@ -69,9 +69,8 @@ class CoreFormView(FormView):
         except:
             self.response_json["status"] = 500
             self.response_json["message"] = self.system_error_message
+            return self.render_to_json_response(self.response_json, status=500)
             #TODO: Log this error for future debugging
-        self.response_json["status"] = 200
-        self.response_json["message"] = self.success_message
 
     def execute(self, form):
         """
@@ -85,8 +84,10 @@ class RegistrationView(CoreFormView):
     form_class = RegistrationForm
     template_name = settings.CORE_TEMPLATE_PATH + '/registration_form.html'
     success_message = _("Registration success. Please activate your account by following the instructions we send to your email.")
+    app=settings.APPS['CORE']
 
     def execute(self, form):
+        form.register()
         return HttpResponse(_(self.success_message))
 
     def get(self, request, *args, **kwargs):

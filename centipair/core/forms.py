@@ -4,10 +4,12 @@ from django.conf import settings
 from django.utils.safestring import mark_safe
 from django.forms.util import ErrorList
 from django.contrib.auth.models import User
+from django.db import transaction
 from PIL import Image, ImageOps
 import os
-from centipair.core.utilities import unique_name, generate_username
-from centipair.core.models import Site, SiteUser
+from centipair.core.utilities import unique_name, generate_username, \
+    generate_service_domain_name
+from centipair.core.models import Site, SiteUser, App
 
 
 class AngularInput(forms.Widget):
@@ -202,11 +204,43 @@ class RegistrationForm(forms.Form):
         return self.cleaned_data
 
     def register(self):
-        user = User.objects.create(
-            username=generate_username(self.cleaned_data["username"]),
-            email=self.cleaned_data["email"]
-        )
-        user.set_password(self.cleaned_data["password"])
+        with transaction.atomic():
+            user = User.objects.create(
+                username=generate_username(self.cleaned_data["username"]),
+                email=self.cleaned_data["email"],
+                is_active=False
+            )
+            user.set_password(self.cleaned_data["password1"])
+            user.save()
+            service_domain_name = generate_service_domain_name(user.username)
+            site = Site(
+                name="My Site",
+                user=user,
+                default_app=settings.APPS['CMS'],
+                domain_name=service_domain_name,
+                service_domain_name=service_domain_name,
+                store_domain_name='',
+                blog_domain_name='',
+                support_domain_name='',
+                template_dir=user.username,
+                is_core=False
+            )
+            site.save()
+            site_user = SiteUser(
+                username=self.cleaned_data["username"],
+                email=user.email,
+                site=site,
+                role=settings.SITE_ROLES['ADMIN'],
+                user=user,
+                core_activation_code=unique_name(user.username)
+            )
+            site_user.save()
+            cms_app = App(
+                template_name='default',
+                template_dir='cms',
+                site=site,
+                app=settings.APPS['CMS'])
+            cms_app.save()
 
         return
 
@@ -236,6 +270,13 @@ class RegistrationFormNoFreeEmail(RegistrationForm):
         if email_domain in self.bad_domains:
             raise forms.ValidationError(_("Registration using free email addresses is prohibited. Please supply a different email address."))
         return self.cleaned_data['email']
+
+
+class AccountActivationForm(forms.Form):
+    activation_id = forms.CharField()
+    def __init__(self, *args, **kwargs):
+        self.request = kwargs.pop('request', None)
+        super(AccountActivationForm, self).__init__(*args, **kwargs)
 
 
 class LoginForm(forms.Form):

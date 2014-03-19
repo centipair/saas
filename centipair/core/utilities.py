@@ -86,6 +86,10 @@ def generate_username(username):
     return unique_name(username)[:30]
 
 
+def generate_service_domain_name(username):
+    return unique_name(username)[:20] + "." + settings.CORE_DOMAIN_NAME
+
+
 def send_activation_email(email, key):
     email_subject = 'Activate your account'
     email_body = 'Account activation Link %(site_url)s/activate/%(activation_key)s' % {"site_url": settings.SITE_URL, "activation_key": key}

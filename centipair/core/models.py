@@ -28,6 +28,10 @@ class SiteUser(models.Model):
     user = models.ForeignKey(User)
     site = models.ForeignKey(Site)
     role = models.CharField(max_length=64)
+    core_activation_code = models.CharField(max_length=128,
+                                            null=True, blank=True)
+    site_activeation_code = models.CharField(max_length=128,
+                                             null=True, blank=True)
 
     @property
     def is_admin(self):
