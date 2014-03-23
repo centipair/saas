@@ -1,9 +1,11 @@
 from django.utils.translation import ugettext_lazy as _
 from django import forms
+from django.forms import EmailField
 from django.conf import settings
 from django.utils.safestring import mark_safe
 from django.forms.util import ErrorList
 from django.contrib.auth.models import User
+from django.contrib.auth import authenticate, login
 from django.db import transaction
 from PIL import Image, ImageOps
 import os
@@ -208,7 +210,7 @@ class RegistrationForm(forms.Form):
             user = User.objects.create(
                 username=generate_username(self.cleaned_data["username"]),
                 email=self.cleaned_data["email"],
-                is_active=False
+                is_active=True
             )
             user.set_password(self.cleaned_data["password1"])
             user.save()
@@ -226,13 +228,21 @@ class RegistrationForm(forms.Form):
                 is_core=False
             )
             site.save()
+            core_site_user = SiteUser(
+                username=self.cleaned_data["username"],
+                email=user.email,
+                site_id=self.request.site.id,
+                role=settings.SITE_ROLES['USER'],
+                user=user,
+                core_activation_code=unique_name(user.username)
+            )
+            core_site_user.save()
             site_user = SiteUser(
                 username=self.cleaned_data["username"],
                 email=user.email,
                 site=site,
                 role=settings.SITE_ROLES['ADMIN'],
-                user=user,
-                core_activation_code=unique_name(user.username)
+                user=user
             )
             site_user.save()
             cms_app = App(
@@ -245,35 +255,9 @@ class RegistrationForm(forms.Form):
         return
 
 
-class RegistrationFormNoFreeEmail(RegistrationForm):
-    """
-    Subclass of ``RegistrationForm`` which disallows registration with
-    email addresses from popular free webmail services; moderately
-    useful for preventing automated spam registrations.
-
-    To change the list of banned domains, subclass this form and
-    override the attribute ``bad_domains``.
-
-    """
-    bad_domains = ['aim.com', 'aol.com', 'email.com', 'gmail.com',
-                   'googlemail.com', 'hotmail.com', 'hushmail.com',
-                   'msn.com', 'mail.ru', 'mailinator.com', 'live.com',
-                   'yahoo.com']
-
-    def clean_email(self):
-        """
-        Check the supplied email address against a list of known free
-        webmail domains.
-
-        """
-        email_domain = self.cleaned_data['email'].split('@')[1]
-        if email_domain in self.bad_domains:
-            raise forms.ValidationError(_("Registration using free email addresses is prohibited. Please supply a different email address."))
-        return self.cleaned_data['email']
-
-
 class AccountActivationForm(forms.Form):
     activation_id = forms.CharField()
+
     def __init__(self, *args, **kwargs):
         self.request = kwargs.pop('request', None)
         super(AccountActivationForm, self).__init__(*args, **kwargs)
@@ -284,16 +268,49 @@ class LoginForm(forms.Form):
         self.request = kwargs.pop('request', None)
         super(LoginForm, self).__init__(*args, **kwargs)
 
-    username = forms.RegexField(
+    username = forms.CharField(
         widget=AngularInput(label=_("Username"),
                             placeholder=_("Username")),
-        regex=r'^[\w.@+-]+$',
         max_length=30,
-        label=_("Username"),
-        error_messages={'invalid': _("This value may contain only letters, numbers and @/./+/-/_ characters.")})
+        label=_("Username"))
 
     password = forms.CharField(widget=AngularInput(
         label=_("Password"),
         placeholder=_("Password"),
         input_type="password"
     ))
+
+    def clean(self):
+        username = self.cleaned_data["username"]
+        password = self.cleaned_data["password"]
+        try:
+            # User can login via email address too
+            # Check whether the provided username is email
+            email_check = EmailField()
+            email = email_check.clean(username)
+            site_user = SiteUser.objects.get(email=email,
+                                             site_id=self.request.site.id)
+            unique_username = site_user.user.username
+        except SiteUser.DoesNotExist:
+            # Email does not exist in the current site
+            raise forms.ValidationError(_("Username or password incorrect"))
+        except forms.ValidationError:
+            # Not an email. Probably user is trying to login via username
+            try:
+                site_user = SiteUser.objects.get(username=username,
+                                                 site_id=self.request.site.id)
+                unique_username = site_user.user.username
+            except SiteUser.DoesNotExist:
+                #User name does not exist in current database
+                raise forms.ValidationError(
+                    _("Username or password incorrect"))
+        user = authenticate(username=unique_username, password=password)
+        if user is not None:
+            if user.is_active:
+                login(self.request, user)
+            else:
+                raise forms.ValidationError(
+                    _("This account is deactivated."))
+        else:
+            raise forms.ValidationError(
+                _("Username or password incorrect"))

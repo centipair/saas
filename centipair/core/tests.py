@@ -40,3 +40,20 @@ class RegistrationTest(TestCase):
                 "tos": True}
         response = core_ajax_post('registration', data)
         self.assertEqual(response.status_code, 200)
+        # test login via email
+        data = {"username": "devasiajosephtest@gmail.com",
+                "password": "password"}
+
+        response = core_ajax_post('login', data)
+        self.assertEqual(response.status_code, 200)
+        # test login via username
+        data = {"username": "user",
+                "password": "password"}
+        response = core_ajax_post('login', data)
+        self.assertEqual(response.status_code, 200)
+
+        # test invalid login
+        data = {"username": "user1",
+                "password": "password"}
+        response = core_ajax_post('login', data)
+        self.assertEqual(response.status_code, 422)
