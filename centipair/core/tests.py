@@ -29,6 +29,7 @@ class RegistrationTest(TestCase):
     fixtures = ['test_data.json']
 
     def test_registration_page(self):
+        print("Registration page loaded successfully")
         response = get_page('registration')
         self.assertEqual(response.status_code, 200)
 

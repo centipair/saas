@@ -141,7 +141,8 @@ function SubmitCtrl($scope, $http, Notifier, PostData){
 app.controller('RegisterCtrl', function($scope, $controller){
     $controller('SubmitCtrl', {$scope:$scope});
     $scope.callback = function(data){
-	console.log("register control callback");
+	alert("registraion success");
+	console.log("Registration success");
 	console.log(data);
     }
 });
@@ -149,6 +150,7 @@ app.controller('RegisterCtrl', function($scope, $controller){
 app.controller('LoginCtrl', function($scope, $controller){
     $controller('SubmitCtrl', {$scope:$scope});
     $scope.callback = function(data){
+	alert("login success");
 	console.log("login control callback");
 	console.log(data);
     }

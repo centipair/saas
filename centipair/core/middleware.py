@@ -7,6 +7,10 @@ from django.shortcuts import render
 from django.conf import settings
 
 
+def select_domain(request):
+    return
+
+
 def user_site_home(request):
     if request.site.default_app == settings.APPS['CMS']:
         return cms_home(request)
@@ -148,6 +152,7 @@ class SiteMirror(object):
     def get_site(self, request):
     #TODO: Implement cache layer.
         try:
+            #TODO: check for www
             domain_name = request.META["HTTP_HOST"].split(":")[0]
             site_obj = Site.objects.get(
                 Q(domain_name=domain_name) |
@@ -156,6 +161,7 @@ class SiteMirror(object):
                 Q(blog_domain_name=domain_name) |
                 Q(support_domain_name=domain_name))
             return site_obj
+            self.requested_domain_name = domain_name
         except Site.DoesNotExist:
             return None
 
@@ -211,4 +217,3 @@ def blog_home(request):
 def support_home(request):
     return render_template(request, 'index.html',
                            app=settings.APPS['SUPPORT'])
-
