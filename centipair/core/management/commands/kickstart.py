@@ -7,13 +7,13 @@ from centipair.core.models import Site, App, SiteUser
 from centipair.core.utilities import generate_username
 
 
-def create_site_user(username, site, role):
+def create_site_user(username, user, site, role):
     site_user = SiteUser.objects.get_or_create(
         username=username,
-        email=site.user.email,
+        email=user.email,
         site=site,
         role=role,
-        user=site.user
+        user=user
     )
     return site_user
 
@@ -34,34 +34,31 @@ def localhost_user():
 
 def create_core_app(site):
     app, created = App.objects.get_or_create(
-        template_name='core',
-        template_dir='centipair',
+        template_name='flat',
+        template_dir='core',
         site=site,
+        domain_name='localhost',
         app=settings.APPS['CORE'])
 
 
 def create_localhost():
     site, created = Site.objects.get_or_create(
         name='localhost',
-        user=localhost_user(),
-        default_app=settings.APPS['CORE'],
-        domain_name='localhost',
-        service_domain_name='service.localhost',
-        store_domain_name='store.localhost',
-        blog_domain_name='blog.localhost',
-        support_domain_name='support.localhost',
-        template_dir='',
-        is_core=True
+        template_dir='centipair',
+        default_app=settings.APPS['CMS'],
+        domain_name='localhost'
     )
     if created:
         print (_("Local site created"))
     create_core_app(site)
     site.save()
-    create_site_user("admin", site, settings.SITE_ROLES['ADMIN'])
+    user = localhost_user()
+    create_site_user("admin", user, site, settings.SITE_ROLES['ADMIN'])
 
 
 def create_store_app(site):
     cms_app, create = App.objects.get_or_create(
+        domain_name='centipair-shop.com',
         template_name='business-casual',
         template_dir='cms',
         site=site,
@@ -69,6 +66,7 @@ def create_store_app(site):
     cms_app.save()
 
     store_app, create = App.objects.get_or_create(
+        domain_name='store.centipair-shop.com',
         template_name='shop-homepage',
         template_dir='store',
         site=site,
@@ -76,12 +74,14 @@ def create_store_app(site):
     store_app.save()
 
     blog_app, create = App.objects.get_or_create(
+        domain_name='blog.centipair-shop.com',
         template_name='blog-home',
         template_dir='blog',
         site=site,
         app=settings.APPS['BLOG'])
     blog_app.save()
     support_app, create = App.objects.get_or_create(
+        domain_name='support.centipair-shop.com',
         template_name='simple-sidebar',
         template_dir='support',
         site=site,
@@ -104,20 +104,14 @@ def store_user():
 def create_test_store():
     site, created = Site.objects.get_or_create(
         name="my shop",
-        user=store_user(),
         default_app=settings.APPS['CMS'],
-        domain_name='centipair-shop.com',
-        service_domain_name='centipair-shop.localhost',
-        store_domain_name='store.centipair-shop.com',
-        blog_domain_name='blog.centipair-shop.com',
-        support_domain_name='support.centipair-shop.com',
-        template_dir='centipair-shop.com',
-        is_core=False
+        template_dir='centipair-shop.com'
     )
     if created:
         print (_("New store created"))
     create_store_app(site)
-    create_site_user("seller", site, settings.SITE_ROLES["ADMIN"])
+    user = store_user()
+    create_site_user("seller", user, site, settings.SITE_ROLES["ADMIN"])
     return
 
 
@@ -126,10 +120,13 @@ class Command(BaseCommand):
     help = _('Creates new site for localhost development')
 
     def handle(self, *args, **options):
+        create_localhost()
+        create_test_store()
+        """
         try:
             create_localhost()
             create_test_store()
         except:
             raise CommandError(_('Command Error'))
-
+        """
         self.stdout.write(_('Created new site for development'))

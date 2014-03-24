@@ -174,6 +174,7 @@ TEMPLATE_DIRS = (
 )
 
 APPS = {'CORE': 'core',
+        'ROOT': 'root',  # root app is imaginary
         'CMS': 'cms',
         'STORE': 'store',
         'BLOG': 'blog',

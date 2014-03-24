@@ -12,9 +12,9 @@ def select_domain(request):
 
 
 def user_site_home(request):
-    if request.site.default_app == settings.APPS['CMS']:
+    if request.site.requested_app == settings.APPS['CMS']:
         return cms_home(request)
-    elif request.site.default_app == settings.APPS['STORE']:
+    elif request.site.requested_app == settings.APPS['STORE']:
         return store_home(request)
     else:
         #TODO: render a nice template
@@ -22,7 +22,7 @@ def user_site_home(request):
 
 
 def site_home(request):
-    if request.site.is_core:
+    if request.site.requested_app == settings.APPS['CORE']:
         return core_home(request)
     else:
         return user_site_home(request)
@@ -81,6 +81,11 @@ def render_template(request, template_file, context={}, app=None, base=None):
         return render_core_template(request, "app_error.html", context)
 
 
+def render_template_new(request, template_file, context={}, base=None):
+    site = request.site
+    #template_location =
+
+
 def render_app_template(request, template_file, context, app, base):
     site = request.site
     app = App.objects.get(site_id=request.site.id, app=app)
@@ -123,6 +128,7 @@ class AppMirror(object):
         self.template_name = app_model.template_name
         self.template_dir = app_model.template_dir
         self.app = app_model.app
+        self.domain_name = app_model.app
 
 
 class SiteMirror(object):
@@ -132,36 +138,40 @@ class SiteMirror(object):
     """
     def __init__(self, request, *args, **kwargs):
         self.exists = False
-        site = self.get_site(request)
-        if not site:
+        self.requested_app = self.get_requested_app(request)
+        if not self.requested_app:
             return
-        self.id = site.id
+        site = self.requested_app.site
         self.exists = True
+        self.id = site.id
         self.name = site.name
-        self.domain_name = site.domain_name
-        self.service_domain_name = site.service_domain_name
-        self.store_domain_name = site.store_domain_name
-        self.blog_domain_name = site.blog_domain_name
-        self.support_domain_name = site.support_domain_name
         self.template_dir = site.template_dir
-        self.is_core = site.is_core
-        self.default_app = site.default_app
         self.site_user = SiteUserMirror(request, site)
         self.apps = self.get_site_apps()
+        #self.requested_app =
+
+    def get_requested_app(self, request):
+        domain_name = request.META["HTTP_HOST"].split(":")[0]
+        if 'www.' in domain_name:
+            domain_name = domain_name.replace('www.', '')
+        #TODO: implement cache here
+        try:
+            app = App.objects.get(domain_name=domain_name)
+        except App.DoesNotExist:
+            return None
+
+        self.requested_app = AppMirror(app)
+        return
 
     def get_site(self, request):
     #TODO: Implement cache layer.
         try:
-            #TODO: check for www
             domain_name = request.META["HTTP_HOST"].split(":")[0]
-            site_obj = Site.objects.get(
-                Q(domain_name=domain_name) |
-                Q(service_domain_name=domain_name) |
-                Q(store_domain_name=domain_name) |
-                Q(blog_domain_name=domain_name) |
-                Q(support_domain_name=domain_name))
-            return site_obj
+            if 'www.' in domain_name:
+                domain_name = domain_name.replace('www.', '')
             self.requested_domain_name = domain_name
+            app_obj = App.objects.get(domain_name=domain_name)
+            return app_obj.site
         except Site.DoesNotExist:
             return None
 

@@ -5,18 +5,10 @@ from django.conf import settings
 
 class Site(models.Model):
     name = models.CharField(max_length=1024)
-    user = models.ForeignKey(User)
-    default_app = models.CharField(max_length=64, default=settings.APPS['CMS'])
-    domain_name = models.CharField(max_length=1024)
-    service_domain_name = models.CharField(max_length=1024)
-    store_domain_name = models.CharField(max_length=1024,
-                                         null=True, blank=True)
-    blog_domain_name = models.CharField(max_length=1024,
-                                        null=True, blank=True)
-    support_domain_name = models.CharField(max_length=1024,
-                                           null=True, blank=True)
     template_dir = models.CharField(max_length=1024)
-    is_core = models.BooleanField(default=False)
+    default_app = models.CharField(max_length=64)
+    active = models.BooleanField(default=True)
+    domain_name = models.CharField(max_length=512)
 
     def __unicode__(self):
         return u'%s' % (self.name)
@@ -30,8 +22,8 @@ class SiteUser(models.Model):
     role = models.CharField(max_length=64)
     core_activation_code = models.CharField(max_length=128,
                                             null=True, blank=True)
-    site_activeation_code = models.CharField(max_length=128,
-                                             null=True, blank=True)
+    site_activation_code = models.CharField(max_length=128,
+                                            null=True, blank=True)
 
     @property
     def is_admin(self):
@@ -55,8 +47,12 @@ class App(models.Model):
     template_dir = models.CharField(max_length=1024)
     site = models.ForeignKey(Site)
     app = models.CharField(max_length=64)
+    domain_name = models.CharField(max_length=1024,
+                                   null=True, blank=True)
 
 
+#TODO: move this to cms app
+"""
 class Page(models.Model):
     title = models.CharField(max_length=1024)
     description = models.TextField(max_length=1024,
@@ -72,3 +68,4 @@ class Page(models.Model):
 
     def __unicode__(self):
         return u'%s' % (self.name)
+"""

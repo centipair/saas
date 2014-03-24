@@ -11,6 +11,8 @@ import json
 
 
 def home(request):
+    print request.site.requested_domain_name
+    print request.site.requested_app
     return site_home(request)
 
 

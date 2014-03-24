@@ -218,14 +218,7 @@ class RegistrationForm(forms.Form):
             site = Site(
                 name="My Site",
                 user=user,
-                default_app=settings.APPS['CMS'],
-                domain_name=service_domain_name,
-                service_domain_name=service_domain_name,
-                store_domain_name='',
-                blog_domain_name='',
-                support_domain_name='',
-                template_dir=user.username,
-                is_core=False
+                template_dir=user.username
             )
             site.save()
             core_site_user = SiteUser(
@@ -249,9 +242,10 @@ class RegistrationForm(forms.Form):
                 template_name='default',
                 template_dir='cms',
                 site=site,
-                app=settings.APPS['CMS'])
+                app=settings.APPS['CMS'],
+                domain_name='',
+                service_domain_name=service_domain_name)
             cms_app.save()
-
         return
 
 
