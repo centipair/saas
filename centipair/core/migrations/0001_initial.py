@@ -43,19 +43,6 @@ class Migration(SchemaMigration):
         ))
         db.send_create_signal(u'core', ['App'])
 
-        # Adding model 'Page'
-        db.create_table(u'core_page', (
-            (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('title', self.gf('django.db.models.fields.CharField')(max_length=1024)),
-            ('description', self.gf('django.db.models.fields.TextField')(max_length=1024, null=True, blank=True)),
-            ('edited_date', self.gf('django.db.models.fields.DateTimeField')(auto_now_add=True, blank=True)),
-            ('url', self.gf('django.db.models.fields.CharField')(max_length=1024)),
-            ('meta_description', self.gf('django.db.models.fields.CharField')(max_length=150, null=True, blank=True)),
-            ('editor', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['auth.User'])),
-            ('site', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['core.Site'])),
-        ))
-        db.send_create_signal(u'core', ['Page'])
-
 
     def backwards(self, orm):
         # Deleting model 'Site'
@@ -66,9 +53,6 @@ class Migration(SchemaMigration):
 
         # Deleting model 'App'
         db.delete_table(u'core_app')
-
-        # Deleting model 'Page'
-        db.delete_table(u'core_page')
 
 
     models = {
@@ -116,17 +100,6 @@ class Migration(SchemaMigration):
             'site': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['core.Site']"}),
             'template_dir': ('django.db.models.fields.CharField', [], {'max_length': '1024'}),
             'template_name': ('django.db.models.fields.CharField', [], {'max_length': '1024'})
-        },
-        u'core.page': {
-            'Meta': {'object_name': 'Page'},
-            'description': ('django.db.models.fields.TextField', [], {'max_length': '1024', 'null': 'True', 'blank': 'True'}),
-            'edited_date': ('django.db.models.fields.DateTimeField', [], {'auto_now_add': 'True', 'blank': 'True'}),
-            'editor': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['auth.User']"}),
-            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'meta_description': ('django.db.models.fields.CharField', [], {'max_length': '150', 'null': 'True', 'blank': 'True'}),
-            'site': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['core.Site']"}),
-            'title': ('django.db.models.fields.CharField', [], {'max_length': '1024'}),
-            'url': ('django.db.models.fields.CharField', [], {'max_length': '1024'})
         },
         u'core.site': {
             'Meta': {'object_name': 'Site'},

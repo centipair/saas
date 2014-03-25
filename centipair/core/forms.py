@@ -207,8 +207,10 @@ class RegistrationForm(forms.Form):
 
     def register(self):
         with transaction.atomic():
+            generated_username = generate_username(
+                self.cleaned_data["username"])
             user = User.objects.create(
-                username=generate_username(self.cleaned_data["username"]),
+                username=generated_username,
                 email=self.cleaned_data["email"],
                 is_active=True
             )
@@ -217,8 +219,11 @@ class RegistrationForm(forms.Form):
             service_domain_name = generate_service_domain_name(user.username)
             site = Site(
                 name="My Site",
-                user=user,
-                template_dir=user.username
+                template_dir=user.username,
+                default_app=settings.APPS['CMS'],
+                active=True,
+                domain_name=service_domain_name + "." +
+                settings.CORE_DOMAIN_NAME
             )
             site.save()
             core_site_user = SiteUser(
@@ -243,8 +248,7 @@ class RegistrationForm(forms.Form):
                 template_dir='cms',
                 site=site,
                 app=settings.APPS['CMS'],
-                domain_name='',
-                service_domain_name=service_domain_name)
+                domain_name=service_domain_name)
             cms_app.save()
         return
 
