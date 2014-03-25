@@ -41,7 +41,7 @@ def get_site_app_cache(site_id, app):
 
 
 def get_site_app(site_id, app):
-    app_dict = get_site_apps_cache(site_id, app)
+    app_dict = get_site_app_cache(site_id, app)
     return AppMirror(app_dict)
 
 

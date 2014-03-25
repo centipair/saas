@@ -4,18 +4,13 @@ from django.shortcuts import redirect
 from django.conf import settings
 from django.views.generic.edit import FormView
 from django.views.generic.base import View
-from centipair.core.middleware import render_template,\
-    cdn_file, core_cdn_file, site_home
 from centipair.core.forms import RegistrationForm, LoginForm
-from centipair.core.template_processor import render_template_new
+from centipair.core.template_processor import render_template, cdn_file
 import json
 
 
 def home(request):
-    print request.site.requested_domain_name
-    print request.site.requested_app.app
-    print request.site.apps
-    return render_template_new(request, "index.html", base="base.html")
+    return render_template(request, "index.html", base="base.html")
 
 
 def core_pricing(request):
@@ -29,7 +24,7 @@ def cdn_redirect(request, source):
 
 
 def core_cdn_redirect(request, source):
-    return redirect(core_cdn_file(request, source))
+    return redirect(cdn_file(request, source))
 
 
 class CoreView(View):
@@ -97,9 +92,10 @@ class RegistrationView(CoreFormView):
     def get(self, request, *args, **kwargs):
         form = RegistrationForm()
         return render_template(request,
-                               "registration_form.html",
-                               context={"form": form},
-                               app=settings.APPS['CORE'])
+                                   "registration_form.html",
+                                   context={"form": form},
+                                   app=settings.APPS['CORE'],
+                                   base="base.html")
 
 
 class LoginView(CoreFormView):
@@ -111,9 +107,10 @@ class LoginView(CoreFormView):
     def get(self, request, *args, **kwargs):
         form = LoginForm()
         return render_template(request,
-                               "login_form.html",
-                               context={"form": form},
-                               app=settings.APPS['CORE'])
+                                   "login_form.html",
+                                   context={"form": form},
+                                   app=settings.APPS['CORE'],
+                                   base="base.html")
 
     def execute(self, form):
         return HttpResponse(_(self.success_message))

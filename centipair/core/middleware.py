@@ -36,12 +36,6 @@ def cdn_file(request, source):
     return source_file_url
 
 
-def core_cdn_file(request, source):
-    source_file_url = settings.TEMPLATE_STATIC_URL + "/" +\
-        settings.CORE_TEMPLATE_PATH + "/" + source
-    return source_file_url
-
-
 def get_base_path(request, base_file):
     site = request.site
     if site.is_core:
