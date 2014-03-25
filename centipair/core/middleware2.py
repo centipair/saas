@@ -3,17 +3,8 @@ from django.http import HttpResponse
 from django.utils.translation import ugettext as _
 from django.shortcuts import render
 from django.conf import settings
-from centipair.core.cache import get_app_cache, get_site_cache,\
-    get_site_apps_cache
-
-
-class AppMirror(object):
-    def __init__(self, request, app_dict, *args, **kwargs):
-        self.template_name = app_dict["template_name"]
-        self.template_dir = app_dict["template_dir"]
-        self.app = app_dict["app"]
-        self.domain_name = app_dict["domain_name"]
-        self.site_id = app_dict["site_id"]
+from centipair.core.cache import AppMirror, get_app_cache, get_site_cache,\
+    get_site_apps_cache, get_site_app_cache
 
 
 class SiteMirror(object):
@@ -22,20 +13,26 @@ class SiteMirror(object):
     Instance contains site and Site User details
     """
     def __init__(self, request, *args, **kwargs):
+        self.exists = False
         domain_name = request.META["HTTP_HOST"].split(":")[0]
         if 'www.' in domain_name:
             domain_name = domain_name.replace('www.', '')
-        self.exists = False
         app = get_app_cache(domain_name)
         if not app:
             return None
         self.exists = True
-        self.requested_app = AppMirror(app)
+        self.requested_domain_name = domain_name
         site = get_site_cache(app["site_id"])
+        if site["domain_name"] == app["domain_name"]:
+            # default app
+            app = get_site_app_cache(site["id"], site["default_app"])
+
+        self.requested_app = AppMirror(app)
         self.id = site["id"]
         self.name = site["name"]
         self.template_dir = site["template_dir"]
-        self.apps = get_site_apps_cache()
+        self.domain_name = site["domain_name"]
+        self.apps = get_site_apps_cache(self.id)
 
     def not_found(self):
         return HttpResponse(_('Not found'), status=404)

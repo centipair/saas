@@ -1,4 +1,13 @@
-from centipair.core.models import Site, SiteUser, App
+from centipair.core.models import Site, App
+
+
+class AppMirror(object):
+    def __init__(self, app_dict, *args, **kwargs):
+        self.template_name = app_dict["template_name"]
+        self.template_dir = app_dict["template_dir"]
+        self.app = app_dict["app"]
+        self.domain_name = app_dict["domain_name"]
+        self.site_id = app_dict["site_id"]
 
 
 def to_dict(obj):
@@ -21,6 +30,19 @@ def get_app_cache(domain_name):
 
     except App.DoesNotExist:
         return None
+
+
+def get_site_app_cache(site_id, app):
+    #TODO: implement cache if necessary
+    app_obj = App.objects.get(site_id=site_id, app=app)
+    # mocking response map from cache
+    app_dict = to_dict(app_obj)
+    return app_dict
+
+
+def get_site_app(site_id, app):
+    app_dict = get_site_apps_cache(site_id, app)
+    return AppMirror(app_dict)
 
 
 def get_site_apps_cache(site_id):

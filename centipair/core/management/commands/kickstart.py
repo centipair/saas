@@ -45,7 +45,7 @@ def create_localhost():
     site, created = Site.objects.get_or_create(
         name='localhost',
         template_dir='centipair',
-        default_app=settings.APPS['CMS'],
+        default_app=settings.APPS['CORE'],
         domain_name='localhost'
     )
     if created:

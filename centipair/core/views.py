@@ -7,13 +7,15 @@ from django.views.generic.base import View
 from centipair.core.middleware import render_template,\
     cdn_file, core_cdn_file, site_home
 from centipair.core.forms import RegistrationForm, LoginForm
+from centipair.core.template_processor import render_template_new
 import json
 
 
 def home(request):
     print request.site.requested_domain_name
-    print request.site.requested_app
-    return site_home(request)
+    print request.site.requested_app.app
+    print request.site.apps
+    return render_template_new(request, "index.html", base="base.html")
 
 
 def core_pricing(request):
@@ -86,7 +88,7 @@ class RegistrationView(CoreFormView):
     form_class = RegistrationForm
     template_name = settings.CORE_TEMPLATE_PATH + '/registration_form.html'
     success_message = _("Registration success. Please activate your account by following the instructions we send to your email.")
-    app=settings.APPS['CORE']
+    app = settings.APPS['CORE']
 
     def execute(self, form):
         form.register()
