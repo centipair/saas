@@ -41,7 +41,7 @@ class CoreFormView(FormView):
 
     def dispatch(self, *args, **kwargs):
         if self.app not in self.request.site.apps:
-            return HttpResponse('not found')
+            return HttpResponse('not found', status=404)
         return super(CoreFormView, self).dispatch(*args, **kwargs)
 
     def get_form_kwargs(self):
@@ -92,10 +92,10 @@ class RegistrationView(CoreFormView):
     def get(self, request, *args, **kwargs):
         form = RegistrationForm()
         return render_template(request,
-                                   "registration_form.html",
-                                   context={"form": form},
-                                   app=settings.APPS['CORE'],
-                                   base="base.html")
+                               "registration_form.html",
+                               context={"form": form},
+                               app=settings.APPS['CORE'],
+                               base="base.html")
 
 
 class LoginView(CoreFormView):
@@ -107,10 +107,10 @@ class LoginView(CoreFormView):
     def get(self, request, *args, **kwargs):
         form = LoginForm()
         return render_template(request,
-                                   "login_form.html",
-                                   context={"form": form},
-                                   app=settings.APPS['CORE'],
-                                   base="base.html")
+                               "login_form.html",
+                               context={"form": form},
+                               app=settings.APPS['CORE'],
+                               base="base.html")
 
     def execute(self, form):
         return HttpResponse(_(self.success_message))

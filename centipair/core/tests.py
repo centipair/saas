@@ -11,10 +11,10 @@ def logged_in_client(username="dev",
     return c
 
 
-def core_ajax_post(url_name, data):
+def core_ajax_post(url_name, data, domain_name='localhost'):
     c = Client()
     response = c.post(reverse(url_name), data,
-                      HTTP_HOST='localhost',
+                      HTTP_HOST=domain_name,
                       HTTP_X_REQUESTED_WITH='XMLHttpRequest')
     return response
 
@@ -31,12 +31,10 @@ class RegistrationTest(TestCase):
     def test_registration_page(self):
         response = get_page('registration')
         self.assertEqual(response.status_code, 200)
-        print(" - Registration page loaded")
 
     def test_login_page(self):
         response = get_page('login')
         self.assertEqual(response.status_code, 200)
-        print(" - Login page loaded")
 
     def test_registration(self):
         data = {"username": "user",
@@ -46,24 +44,29 @@ class RegistrationTest(TestCase):
                 "tos": True}
         response = core_ajax_post('registration', data)
         self.assertEqual(response.status_code, 200)
-        print(" - User registration completed")
 
     def test_login_email(self):
         # test login via email
         data = {"username": "devasiajosephtest@gmail.com",
                 "password": "password"}
 
+        response = core_ajax_post('login', data,
+                                  domain_name='centipair-shop.com')
+        self.assertEqual(response.status_code, 404)
+
         response = core_ajax_post('login', data)
         self.assertEqual(response.status_code, 200)
-        print(" - Logged in successfully via email")
 
     def test_login_username(self):
         # test login via username
-        data = {"username": "username",
+        data = {"username": "seller",
                 "password": "password"}
+        response = core_ajax_post('login', data,
+                                  domain_name='centipair-shop.com')
+        self.assertEqual(response.status_code, 404)
+
         response = core_ajax_post('login', data)
         self.assertEqual(response.status_code, 200)
-        print(" - Logged in successfully via username")
 
     def test_invalid_login(self):
          # test invalid login
@@ -71,4 +74,3 @@ class RegistrationTest(TestCase):
                 "password": "password"}
         response = core_ajax_post('login', data)
         self.assertEqual(response.status_code, 422)
-        print(" - Invalid login test success")

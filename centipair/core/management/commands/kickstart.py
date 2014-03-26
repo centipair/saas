@@ -54,6 +54,7 @@ def create_localhost():
     site.save()
     user = localhost_user()
     create_site_user("admin", user, site, settings.SITE_ROLES['ADMIN'])
+    return site
 
 
 def create_store_app(site):
@@ -101,7 +102,7 @@ def store_user():
     return user
 
 
-def create_test_store():
+def create_test_store(core_site):
     site, created = Site.objects.get_or_create(
         name="my shop",
         default_app=settings.APPS['CMS'],
@@ -112,6 +113,7 @@ def create_test_store():
     create_store_app(site)
     user = store_user()
     create_site_user("seller", user, site, settings.SITE_ROLES["ADMIN"])
+    create_site_user("seller", user, core_site, settings.SITE_ROLES["USER"])
     return
 
 
@@ -120,8 +122,8 @@ class Command(BaseCommand):
     help = _('Creates new site for localhost development')
 
     def handle(self, *args, **options):
-        create_localhost()
-        create_test_store()
+        core_site = create_localhost()
+        create_test_store(core_site)
         """
         try:
             create_localhost()
