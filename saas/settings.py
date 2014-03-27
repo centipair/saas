@@ -173,12 +173,14 @@ TEMPLATE_DIRS = (
     STATIC_ROOT + '/templates',
 )
 
-APPS = {'CORE': 'core',
-        'ROOT': 'root',  # root app is imaginary
-        'CMS': 'cms',
-        'STORE': 'store',
-        'BLOG': 'blog',
-        'SUPPORT': 'support'}
+APPS = {
+    'ROOT': 'root',  # root app is imaginary
+    'CORE': 'core',
+    'CMS': 'cms',
+    'STORE': 'store',
+    'BLOG': 'blog',
+    'SUPPORT': 'support',
+    'SITE-ADMIN': 'site-admin'}
 
 DEFAULT_APP = APPS['CORE']
 

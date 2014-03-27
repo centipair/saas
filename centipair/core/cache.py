@@ -1,4 +1,4 @@
-from centipair.core.models import Site, App
+from centipair.core.models import Site, App, SiteUser
 
 
 class AppMirror(object):
@@ -15,6 +15,20 @@ def to_dict(obj):
     if '_state' in dict_obj:
         del dict_obj['_state']
     return dict_obj
+
+
+def valid_site_role_cache(request, role):
+    """
+    Checks for appropriate site role
+    """
+    try:
+        #TODO: implement cache here
+        SiteUser.objects.get(user=request.user,
+                             site_id=request.site.id,
+                             role=role)
+        return True
+    except SiteUser.DoesNotExist:
+        return False
 
 
 def get_app_cache(domain_name):

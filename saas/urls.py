@@ -1,5 +1,6 @@
 from django.conf.urls import patterns, include, url
 from centipair.core.views import RegistrationView, LoginView
+from centipair.core.admin_views import Dashboard
 from rest_framework import routers
 from centipair.core import api_views
 
@@ -21,11 +22,13 @@ urlpatterns = patterns(
     url(r'^register$', RegistrationView.as_view(), name='registration'),
     url(r'^login/?$', LoginView.as_view(), name='login'),
     url(r'^pricing$', 'centipair.core.views.core_pricing', name='pricing'),
+    url(r'^dashboard$', Dashboard.as_view(), name='dashboard'),
     url(r'^cdn/(?P<source>.+)$', 'centipair.core.views.cdn_redirect',
         name='cdn_redirect'),
     url(r'^core-cdn/(?P<source>.+)$', 'centipair.core.views.core_cdn_redirect',
         name='core_cdn_redirect'),
     #url(r'^admin/', include(admin.site.urls)),
     url(r'^api/', include(router.urls)),
-    url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework'))
+    url(r'^api-auth/', include('rest_framework.urls',
+                               namespace='rest_framework'))
 )

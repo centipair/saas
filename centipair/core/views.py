@@ -6,6 +6,7 @@ from django.views.generic.edit import FormView
 from django.views.generic.base import View
 from centipair.core.forms import RegistrationForm, LoginForm
 from centipair.core.template_processor import render_template, cdn_file
+from centipair.core.cache import valid_site_role_cache
 import json
 
 
@@ -28,9 +29,34 @@ def core_cdn_redirect(request, source):
 
 
 class CoreView(View):
+    def dispatch(self, request, *args, **kwargs):
+        return super(CoreView, self).dispatch(request, *args, **kwargs)
 
-    def get(self):
-        return
+
+class AuthView(CoreView):
+    role = settings.SITE_ROLES['USER']
+    app = None
+    login_required = True
+
+    def dispatch(self, request, *args, **kwargs):
+        if self.app not in self.request.site.apps:
+            return HttpResponse('app not found', status=404)
+        if self.login_required:
+            if request.user.is_authenticated():
+                if valid_site_role_cache(request, self.role):
+                    return super(CoreView, self).dispatch(request,
+                                                          *args, **kwargs)
+                else:
+                    return HttpResponse('Permission Denied', status=403)
+            else:
+                return HttpResponse('Login required', status=403)
+        else:
+            return super(CoreView, self).dispatch(request, *args, **kwargs)
+
+
+class SiteAdminView(AuthView):
+    role = settings.SITE_ROLES['ADMIN']
+    app = settings.APPS['SITE-ADMIN']
 
 
 class CoreFormView(FormView):
@@ -41,7 +67,7 @@ class CoreFormView(FormView):
 
     def dispatch(self, *args, **kwargs):
         if self.app not in self.request.site.apps:
-            return HttpResponse('not found', status=404)
+            return HttpResponse('app not found', status=404)
         return super(CoreFormView, self).dispatch(*args, **kwargs)
 
     def get_form_kwargs(self):

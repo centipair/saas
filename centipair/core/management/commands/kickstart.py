@@ -40,6 +40,13 @@ def create_core_app(site):
         domain_name='localhost',
         app=settings.APPS['CORE'])
 
+    site_admin_app, create = App.objects.get_or_create(
+        domain_name='localhost.com',
+        template_name='admin',
+        template_dir='site-admin',
+        site=site,
+        app=settings.APPS['SITE-ADMIN'])
+
 
 def create_localhost():
     site, created = Site.objects.get_or_create(
@@ -88,6 +95,12 @@ def create_store_app(site):
         site=site,
         app=settings.APPS['SUPPORT'])
     support_app.save()
+    site_admin_app, create = App.objects.get_or_create(
+        domain_name='centipair-shop.com',
+        template_name='admin',
+        template_dir='site-admin',
+        site=site,
+        app=settings.APPS['SITE-ADMIN'])
 
 
 def store_user():
@@ -113,7 +126,7 @@ def create_test_store(core_site):
     create_store_app(site)
     user = store_user()
     create_site_user("seller", user, site, settings.SITE_ROLES["ADMIN"])
-    create_site_user("seller", user, core_site, settings.SITE_ROLES["USER"])
+    create_site_user("seller", user, core_site, settings.SITE_ROLES["ADMIN"])
     return
 
 
