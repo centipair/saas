@@ -1,10 +1,23 @@
-var app = angular.module("app", []);
- 
+var app = angular.module("app", ['ngRoute']);
+
 app.config(function($interpolateProvider, $httpProvider) {
     $interpolateProvider.startSymbol('[{');
     $interpolateProvider.endSymbol('}]');
     
 });
+
+
+app.config(['$routeProvider', function($routeProvider) {
+    $routeProvider.
+	when('/', {templateUrl: '/admin/dashboard', controller:AdminCtrl}).
+	otherwise({redirectTo: '/'});
+}]);
+
+function AdminCtrl($scope){
+    
+}
+
+
 
 
 app.factory("Notifier", function(){
