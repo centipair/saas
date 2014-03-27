@@ -282,11 +282,11 @@ class LoginForm(forms.Form):
         if 'username' in self.cleaned_data:
             username = self.cleaned_data["username"]
         else:
-            raise forms.ValidationError(_("Username is required"))
+            raise forms.ValidationError(_("Username and Password required"))
         if 'password' in self.cleaned_data:
             password = self.cleaned_data["password"]
         else:
-            raise forms.ValidationError(_("Password is required"))
+            raise forms.ValidationError(_("Username and Password required"))
         try:
             # User can login via email address too
             # Check whether the provided username is email

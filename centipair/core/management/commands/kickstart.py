@@ -96,7 +96,7 @@ def create_store_app(site):
         app=settings.APPS['SUPPORT'])
     support_app.save()
     site_admin_app, create = App.objects.get_or_create(
-        domain_name='centipair-shop.com',
+        domain_name='',
         template_name='admin',
         template_dir='site-admin',
         site=site,

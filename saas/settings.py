@@ -167,6 +167,7 @@ UPLOAD_PATH = STATIC_ROOT + '/uploads'
 USER_TEMPLATE_PATH = STATIC_ROOT + '/user-templates'
 USER_FILES_PATH = BASE_DIR + '/saas/user-files'
 CORE_TEMPLATE_PATH = 'centipair/core'
+CENTIPAIR_TEMPLATE_DIR = 'centipair'
 TEMPLATE_PATH = '/templates/'
 
 TEMPLATE_DIRS = (

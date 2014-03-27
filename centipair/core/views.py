@@ -5,7 +5,7 @@ from django.conf import settings
 from django.views.generic.edit import FormView
 from django.views.generic.base import View
 from centipair.core.forms import RegistrationForm, LoginForm
-from centipair.core.template_processor import render_template, cdn_file
+from centipair.core.template_processor import render_template, cdn_file, core_cdn_file
 from centipair.core.cache import valid_site_role_cache
 import json
 
@@ -25,7 +25,7 @@ def cdn_redirect(request, source):
 
 
 def core_cdn_redirect(request, source):
-    return redirect(cdn_file(request, source))
+    return redirect(core_cdn_file(request, source))
 
 
 class CoreView(View):
@@ -52,11 +52,6 @@ class AuthView(CoreView):
                 return HttpResponse('Login required', status=403)
         else:
             return super(CoreView, self).dispatch(request, *args, **kwargs)
-
-
-class SiteAdminView(AuthView):
-    role = settings.SITE_ROLES['ADMIN']
-    app = settings.APPS['SITE-ADMIN']
 
 
 class CoreFormView(FormView):
@@ -128,14 +123,14 @@ class LoginView(CoreFormView):
     form_class = LoginForm
     template_name = settings.CORE_TEMPLATE_PATH + '/login_form.html'
     success_message = _("Login success")
-    app = settings.APPS['CORE']
+    app = settings.APPS['SITE-ADMIN']
 
     def get(self, request, *args, **kwargs):
         form = LoginForm()
         return render_template(request,
-                               "login_form.html",
+                               "login.html",
                                context={"form": form},
-                               app=settings.APPS['CORE'],
+                               app=self.app,
                                base="base.html")
 
     def execute(self, form):
