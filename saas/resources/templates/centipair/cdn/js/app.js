@@ -11,15 +11,17 @@ app.config(['$routeProvider', function($routeProvider) {
     $routeProvider.
 	when('/', {templateUrl: '/admin/dashboard', controller:"AdminCtrl"}).
 	when('/sites', {templateUrl: '/admin/sites', controller:"AdminCtrl"}).
-	when('/site/edit/:id', {templateUrl: function(params){return '/admin/site/edit/'+params.id}, controller:"AdminCtrl"}).
+	when('/site/edit/:id', {templateUrl: function(params){return '/admin/site/edit/'+params.id}, controller:"SiteCtrl"}).
 	otherwise({redirectTo: '/'});
 }]);
 
 
-app.controller('AdminCtrl', function($scope, $controller){
+app.controller('AdminCtrl', function($scope, $controller, Page){
     $controller('NotifierCtrl', {$scope:$scope});
     $scope.loaderMessage = "Loading...";
     $scope.notify(102);
+    $scope.page = Page;
+    $scope.page.title = 'Admin Hoooi'
     $scope.$on('$routeChangeStart', function() {
 	$scope.notify(102);
     });
@@ -31,10 +33,24 @@ app.controller('AdminCtrl', function($scope, $controller){
     });
 });
 
+app.controller('SiteCtrl', function($scope, $controller){
+    $controller('AdminCtrl', {$scope:$scope});
+    $scope.page.title = "Site controller"
+    $scope.siteData = {};
+    $scope.callback = function(data){
+	console.log('callback');
+    }
+});
+
+
+app.factory("Page", function(){
+    return {title: "Site Administration"};
+});
+
 
 app.factory("Notifier", function(){
     return {show:false, message:"Loading...", class:"notify-loading"};
-})
+});
 
 app.service("Callback", function(){
     this.registrationSuccess = function(data){
@@ -60,7 +76,28 @@ app.service("PostData", function($http, $q, Notifier){
 		deferred.resolve(response);
 	    });
 	return deferred.promise;
-    }}
+    }};
+});
+
+app.service("GetData", function($http, $q, Notifier){
+    return {getData:function(url, data){
+	var deferred = $q.defer();
+	$http(
+	    {url: url, 
+	     data: data,
+	     method: 'GET',
+	     headers : {'Content-Type':'application/x-www-form-urlencoded; charset=UTF-8'}
+	    }).error(function (data, status) {
+		response = {data: data, status: status};
+		deferred.reject(response);
+		
+	    }).success(function (data){
+		response = {data:data, status:200};
+		deferred.resolve(response);
+	    });
+	return deferred.promise;
+	
+    }};
 });
 
 
@@ -129,10 +166,13 @@ app.controller('SubmitCtrl', function($scope, $controller, $http, PostData){
     $scope.form = {}
     $scope.allErrors = false;
     $scope.data = {};
+    $scope.submitButton={disabled: false};
     $scope.callback=function(data){
 	
     };
     $scope.submitFormService=function(url){
+	$scope.submitButton.disabled = true;
+	$scope.submitButton.text = 'Submitting';
 	$scope.notify(102, $scope.loaderMessage)
 	$scope.errors = {};
 	submit_data = $scope.form;
@@ -140,11 +180,13 @@ app.controller('SubmitCtrl', function($scope, $controller, $http, PostData){
 	$scope.response  = PostData.submitForm(url, $.param(submit_data)).then(
 	    function (data){
 		//this is success data
+		$scope.submitButton.disabled=false;
 		$scope.notify(200)
 		$scope.callback(data);
 	    },
 	    function (data){
 		//this is invoked during error
+		$scope.submitButton.disabled=false;
 		data = response.data;
 		status = response.status;
 		if (status==422){
@@ -166,6 +208,21 @@ app.controller('SubmitCtrl', function($scope, $controller, $http, PostData){
 		}
 		
 	    }
+	);//posdata service ends
+	$scope.getResponse  = GetData.getData(url, $.param(submit_data)).then(
+	    function (data){
+		//this is success data
+		console.log(data);
+		$scope.notify(200)
+		$scope.callback(data);
+	    },
+	    function (data){
+		//this is invoked during error
+		data = response.data;
+		status = response.status;
+		console.log(data);
+		
+	    }
 	);
 	
     };
@@ -185,9 +242,7 @@ app.controller('LoginCtrl', function($scope, $controller){
     $controller('SubmitCtrl', {$scope:$scope});
     $scope.loaderMessage = "Logging in...";
     $scope.callback = function(data){
-	alert("login success");
-	console.log("login control callback");
-	console.log(data);
+	window.location = "/admin"
     }
 });
 
