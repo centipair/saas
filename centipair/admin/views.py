@@ -14,7 +14,7 @@ class SiteAdminView(AuthView):
 
 class AdminHome(SiteAdminView):
     def get(self, request, *args, **kwargs):
-        return render_template(request, "admin_base.html", app=self.app)
+        return render_template(request, "admin-base.html", app=self.app)
 
 
 class Dashboard(SiteAdminView):
@@ -28,4 +28,6 @@ class Sites(SiteAdminView):
         return HttpResponse("Sites Loaded")
 
 
-# Create your views here.
+class SitePage(SiteAdminView):
+    def get(self, request, site_id, *args, **kwargs):
+        return HttpResponse("Sites" + str(site_id))

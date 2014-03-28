@@ -126,12 +126,13 @@ class LoginView(CoreFormView):
     app = settings.APPS['SITE-ADMIN']
 
     def get(self, request, *args, **kwargs):
+        print "login?"
         form = LoginForm()
         return render_template(request,
-                               "login.html",
+                               "login_form.html",
                                context={"form": form},
                                app=self.app,
-                               base="base.html")
+                               base="site-admin-base.html")
 
     def execute(self, form):
         return HttpResponse(_(self.success_message))

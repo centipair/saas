@@ -9,15 +9,17 @@ app.config(function($interpolateProvider, $httpProvider) {
 
 app.config(['$routeProvider', function($routeProvider) {
     $routeProvider.
-	when('/', {templateUrl: '/admin/dashboard', controller:AdminCtrl}).
+	when('/', {templateUrl: '/admin/dashboard', controller:"AdminCtrl"}).
+	when('/sites', {templateUrl: '/admin/sites', controller:"AdminCtrl"}).
+	when('/site/edit/:id', {templateUrl: function(params){return '/admin/site/edit/'+params.id}, controller:"AdminCtrl"}).
 	otherwise({redirectTo: '/'});
 }]);
 
-function AdminCtrl($scope){
-    
-}
 
-
+app.controller('AdminCtrl', function($scope, $controller){
+    $controller('NotifierCtrl', {$scope:$scope});
+    $scope.notify(500);
+});
 
 
 app.factory("Notifier", function(){
@@ -63,21 +65,14 @@ app.directive("submit", function(){
 
 function NotifierCtrl($scope, Notifier){
     $scope.notifier = Notifier;
-}
-
-
-
-function SubmitCtrl($scope, $http, Notifier, PostData){
-    $scope.errors = {};
-    $scope.form = {}
-    $scope.allErrors = false;
-    $scope.data = {};
+    $scope.loader_message = "Loading";
     $scope.notify = function(code, message){
 	var show = true;
 	switch (code)
 	{
 	    case 102:
 	    Notifier.class = "notify-loading";
+	    Notifier.message = $scope.loader_message
 	    break;
 	    case 404:
 	    Notifier.class = "notify-error";
@@ -98,7 +93,7 @@ function SubmitCtrl($scope, $http, Notifier, PostData){
 	    case 200:
 	    console.log("200 ok");
 	    console.log(message);
-	    show = false;
+	    show = true;
 	    break;
 	    default:
 	    Notifier.class = "notify-loading";
@@ -111,8 +106,17 @@ function SubmitCtrl($scope, $http, Notifier, PostData){
 	Notifier.show = show;
 	
     };
+}
+
+
+app.controller('SubmitCtrl', function($scope, $controller, $http, PostData){
+    $controller('NotifierCtrl', {$scope:$scope});
+    $scope.errors = {};
+    $scope.form = {}
+    $scope.allErrors = false;
+    $scope.data = {};
     $scope.submitFormService=function(url){
-	$scope.notify(102, "Loading...")
+	$scope.notify(102, $scope.loader_message)
 	$scope.errors = {};
 	submit_data = $scope.form;
 	submit_data["csrfmiddlewaretoken"] = document.getElementsByName('csrfmiddlewaretoken')[0].value;
@@ -149,7 +153,7 @@ function SubmitCtrl($scope, $http, Notifier, PostData){
 	
     };
     
-}
+});
 
 app.controller('RegisterCtrl', function($scope, $controller){
     $controller('SubmitCtrl', {$scope:$scope});
@@ -162,9 +166,12 @@ app.controller('RegisterCtrl', function($scope, $controller){
 
 app.controller('LoginCtrl', function($scope, $controller){
     $controller('SubmitCtrl', {$scope:$scope});
+    $scope.loader_message = "Logging in...";
     $scope.callback = function(data){
 	alert("login success");
 	console.log("login control callback");
 	console.log(data);
     }
 });
+
+
