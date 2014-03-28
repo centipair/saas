@@ -18,7 +18,17 @@ app.config(['$routeProvider', function($routeProvider) {
 
 app.controller('AdminCtrl', function($scope, $controller){
     $controller('NotifierCtrl', {$scope:$scope});
-    $scope.notify(500);
+    $scope.loaderMessage = "Loading...";
+    $scope.notify(102);
+    $scope.$on('$routeChangeStart', function() {
+	$scope.notify(102);
+    });
+    $scope.$on('$routeChangeSuccess', function() {
+	$scope.hideNotification();
+    });
+    $scope.$on('$routeChangeError', function() {
+	console.log('route change error');
+    });
 });
 
 
@@ -65,14 +75,14 @@ app.directive("submit", function(){
 
 function NotifierCtrl($scope, Notifier){
     $scope.notifier = Notifier;
-    $scope.loader_message = "Loading";
+    $scope.loaderMessage = "Loading";
     $scope.notify = function(code, message){
 	var show = true;
 	switch (code)
 	{
 	    case 102:
 	    Notifier.class = "notify-loading";
-	    Notifier.message = $scope.loader_message
+	    Notifier.message = $scope.loaderMessage
 	    break;
 	    case 404:
 	    Notifier.class = "notify-error";
@@ -106,6 +116,10 @@ function NotifierCtrl($scope, Notifier){
 	Notifier.show = show;
 	
     };
+    $scope.hideNotification = function(){
+	Notifier.show = false;
+	Notifier.message = "";
+    };
 }
 
 
@@ -115,8 +129,11 @@ app.controller('SubmitCtrl', function($scope, $controller, $http, PostData){
     $scope.form = {}
     $scope.allErrors = false;
     $scope.data = {};
+    $scope.callback=function(data){
+	
+    };
     $scope.submitFormService=function(url){
-	$scope.notify(102, $scope.loader_message)
+	$scope.notify(102, $scope.loaderMessage)
 	$scope.errors = {};
 	submit_data = $scope.form;
 	submit_data["csrfmiddlewaretoken"] = document.getElementsByName('csrfmiddlewaretoken')[0].value;
@@ -166,7 +183,7 @@ app.controller('RegisterCtrl', function($scope, $controller){
 
 app.controller('LoginCtrl', function($scope, $controller){
     $controller('SubmitCtrl', {$scope:$scope});
-    $scope.loader_message = "Logging in...";
+    $scope.loaderMessage = "Logging in...";
     $scope.callback = function(data){
 	alert("login success");
 	console.log("login control callback");
