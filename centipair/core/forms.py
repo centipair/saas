@@ -6,12 +6,33 @@ from django.utils.safestring import mark_safe
 from django.forms.util import ErrorList
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login
+from django.template.loader import render_to_string
 from django.db import transaction
 from PIL import Image, ImageOps
 import os
 from centipair.core.utilities import unique_name, generate_username, \
     generate_service_domain_name
 from centipair.core.models import Site, SiteUser, App
+
+
+class SelectInput(forms.Widget):
+    def __init__(self, *args, **kwargs):
+        if "label" in kwargs:
+            self.label = kwargs.pop("label")
+        else:
+            self.label = ""
+        if "options" in kwargs:
+            self.options = kwargs.pop("options")
+        else:
+            self.options = []
+
+        super(SelectInput, self).__init__(*args, **kwargs)
+
+    def render(self, name, value, attrs=None):
+        return render_to_string(
+            'widgets/select.html',
+            {"options": self.options,
+             "name": name, "label": self.label})
 
 
 class AngularInput(forms.Widget):

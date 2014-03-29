@@ -1,14 +1,33 @@
 from django.conf import settings
 from django.http import HttpResponse
-from centipair.core.views import AuthView
+from centipair.core.views import AuthView, FormView
+from centipair.core.models import Site
 from centipair.core.template_processor import render_template
+from centipair.admin.serializers import SiteSerializer
+from centipair.admin.forms import SiteForm
 from django.db.models import get_model
+from rest_framework.renderers import JSONRenderer
+
+
+class JSONResponse(HttpResponse):
+    """
+    An HttpResponse that renders its content into JSON.
+    """
+    def __init__(self, data, **kwargs):
+        content = JSONRenderer().render(data)
+        kwargs['content_type'] = 'application/json'
+        super(JSONResponse, self).__init__(content, **kwargs)
 
 
 class SiteAdminView(AuthView):
     """
     Core view for Site Admin
     """
+    role = settings.SITE_ROLES['ADMIN']
+    app = settings.APPS['SITE-ADMIN']
+
+
+class SiteAdminFormView(FormView):
     role = settings.SITE_ROLES['ADMIN']
     app = settings.APPS['SITE-ADMIN']
 
@@ -35,6 +54,11 @@ class OwnObjectsView(SiteAdminView):
             return HttpResponse('Permission Denied', status=403)
 
 
+class Admin404(SiteAdminView):
+    def get(self, request, *args, **kwargs):
+        return HttpResponse('Page Not Found')
+
+
 class AdminHome(SiteAdminView):
     def get(self, request, *args, **kwargs):
         return render_template(request, "admin-base.html", app=self.app)
@@ -45,16 +69,25 @@ class Dashboard(SiteAdminView):
         return render_template(request, "dashboard.html", app=self.app)
 
 
-class Sites(SiteAdminView):
+class SitesPage(SiteAdminView):
     def get(self, request, *args, **kwargs):
-        return HttpResponse("Sites Loaded")
+        return render_template(request, "sites.html", app=self.app)
 
 
-class MySites(OwnObjectsView):
+class SitesEdit(SiteAdminFormView):
+    form_class = SiteForm
+
+    def get(self, request, id, *args, **kwargs):
+        form = SiteForm()
+        return render_template(request, "site_form.html",
+                               app=self.app,
+                               context={"form": form})
+
+
+class SitesMineData(SiteAdminView):
     def get(self, request, *args, **kwargs):
-        return
-
-
-class SitePage(SiteAdminView):
-    def get(self, request, site_id, *args, **kwargs):
-        return HttpResponse("Sites" + str(site_id))
+        sites = Site.objects.filter(is_core=False,
+                                    siteuser__user=request.user,
+                                    siteuser__role=self.role)
+        sites_serialized = SiteSerializer(sites, many=True)
+        return JSONResponse(sites_serialized.data)

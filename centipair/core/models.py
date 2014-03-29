@@ -9,6 +9,7 @@ class Site(models.Model):
     default_app = models.CharField(max_length=64)
     active = models.BooleanField(default=True)
     domain_name = models.CharField(max_length=512)
+    is_core = models.BooleanField(default=False)
 
     def __unicode__(self):
         return u'%s' % (self.name)

@@ -1,3 +1,9 @@
+.ng-cloak {
+    display: none; !important
+}
+.data-row{
+    cursor:pointer;
+}
 .notify {
     position: fixed;
     top: 5%;

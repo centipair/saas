@@ -44,7 +44,7 @@ class AuthView(CoreView):
         if self.login_required:
             if request.user.is_authenticated():
                 if valid_site_role_cache(request, self.role):
-                    return super(CoreView, self).dispatch(request,
+                    return super(AuthView, self).dispatch(request,
                                                           *args, **kwargs)
                 else:
                     return HttpResponse('Permission Denied', status=403)
@@ -59,11 +59,23 @@ class CoreFormView(FormView):
     success_message = _("Success")
     system_error_message = _("System error.Please try again after sometime")
     form_error_message = _("Submitted data is invalid.")
+    login_required = False
 
-    def dispatch(self, *args, **kwargs):
+    def dispatch(self, request, *args, **kwargs):
         if self.app not in self.request.site.apps:
             return HttpResponse('app not found', status=404)
-        return super(CoreFormView, self).dispatch(*args, **kwargs)
+
+        if self.login_required:
+            if request.user.is_authenticated():
+                if valid_site_role_cache(request, self.role):
+                    return super(CoreFormView, self).dispatch(request,
+                                                              *args, **kwargs)
+                else:
+                    return HttpResponse('Permission Denied', status=403)
+            else:
+                return HttpResponse('Login required', status=403)
+        else:
+            return super(CoreFormView, self).dispatch(request, *args, **kwargs)
 
     def get_form_kwargs(self):
         kwargs = super(CoreFormView, self).get_form_kwargs()
@@ -126,7 +138,6 @@ class LoginView(CoreFormView):
     app = settings.APPS['SITE-ADMIN']
 
     def get(self, request, *args, **kwargs):
-        print "login?"
         form = LoginForm()
         return render_template(request,
                                "login_form.html",

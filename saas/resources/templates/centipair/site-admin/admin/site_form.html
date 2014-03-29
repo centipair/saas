@@ -1,0 +1,13 @@
+<h2>Site Manager</h2>
+<div class="row" ng-controller="SiteCtrl">
+  <div class="col-md-4">
+    <form>
+      <div ng-show="allErrors" class="form-group has-error">
+	<label class="control-label">[{errors.__all__}]</label>
+      </div>
+      {{form.name}}
+      {{form.default_app}}
+      <button submit url="/admin/sites/edit" class="btn btn-primary" ng-disabled="submitButton.disabled">Login</button>
+    <form>
+  </div>
+</div>
