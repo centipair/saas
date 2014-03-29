@@ -11,5 +11,5 @@ urlpatterns = patterns(
     url(r'^dashboard$', Dashboard.as_view(), name='dashboard'),
     url(r'^sites$', SitesPage.as_view(), name='sites'),
     url(r'^sites/mine$', SitesMineData.as_view(), name='sites-mine'),
-    url(r'^sites/edit/(?P<id>\d+)$', SitesEdit.as_view(), name='site-edit'),
+    url(r'^sites/edit/(?P<id>\d+)?$', SitesEdit.as_view(), name='site-edit'),
 )

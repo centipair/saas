@@ -6,8 +6,10 @@
 	<label class="control-label">[{errors.__all__}]</label>
       </div>
       {{form.name}}
+      {{form.domain_name}}
       {{form.default_app}}
-      <button submit url="/admin/sites/edit" class="btn btn-primary" ng-disabled="submitButton.disabled">Login</button>
+      
+      <button submit url="/admin/sites/edit/" class="btn btn-primary" ng-disabled="submitButton.disabled">Login</button>
     <form>
   </div>
 </div>

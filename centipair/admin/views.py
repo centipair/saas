@@ -1,6 +1,6 @@
 from django.conf import settings
 from django.http import HttpResponse
-from centipair.core.views import AuthView, FormView
+from centipair.core.views import AuthView, CoreFormView
 from centipair.core.models import Site
 from centipair.core.template_processor import render_template
 from centipair.admin.serializers import SiteSerializer
@@ -27,7 +27,7 @@ class SiteAdminView(AuthView):
     app = settings.APPS['SITE-ADMIN']
 
 
-class SiteAdminFormView(FormView):
+class SiteAdminFormView(CoreFormView):
     role = settings.SITE_ROLES['ADMIN']
     app = settings.APPS['SITE-ADMIN']
 

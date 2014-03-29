@@ -60,6 +60,8 @@ class CoreFormView(FormView):
     system_error_message = _("System error.Please try again after sometime")
     form_error_message = _("Submitted data is invalid.")
     login_required = False
+    #dummy form since this is not used probably
+    template_name = 'dummy.html'
 
     def dispatch(self, request, *args, **kwargs):
         if self.app not in self.request.site.apps:
@@ -133,7 +135,6 @@ class RegistrationView(CoreFormView):
 
 class LoginView(CoreFormView):
     form_class = LoginForm
-    template_name = settings.CORE_TEMPLATE_PATH + '/login_form.html'
     success_message = _("Login success")
     app = settings.APPS['SITE-ADMIN']
 
