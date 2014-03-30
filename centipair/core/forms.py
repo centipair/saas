@@ -15,8 +15,16 @@ from centipair.core.utilities import unique_name, generate_username, \
 from centipair.core.models import Site, SiteUser, App
 
 
+SITE_APPS = [
+    {'name': 'Website', 'value': 'cms'},
+    {'name': 'Store', 'value': 'store'},
+    {'name': 'Blog', 'value': 'blog'},
+    {'name': 'Support Forum', 'value': 'support'}]
+
+
 class SelectInput(forms.Widget):
     def __init__(self, *args, **kwargs):
+        self.ng_init = ""
         if "label" in kwargs:
             self.label = kwargs.pop("label")
         else:
@@ -29,10 +37,14 @@ class SelectInput(forms.Widget):
         super(SelectInput, self).__init__(*args, **kwargs)
 
     def render(self, name, value, attrs=None):
+        if value:
+            self.ng_init = 'ng-init="form.%s=\'%s\'"' % (name, value)
+
         return render_to_string(
             'widgets/select.html',
             {"options": self.options,
-             "name": name, "label": self.label})
+             "name": name, "label": self.label,
+             "ng_init": self.ng_init})
 
 
 class AngularInput(forms.Widget):

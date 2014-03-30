@@ -1,6 +1,6 @@
 <div class="form-group [{errors.{{name}}Class}]">
   <label for="{{name}}">{{label}}</label>
-  <select ng-model="form.{{name}}" class="form-control">
+  <select ng-model="form.{{name}}" class="form-control" {{ng_init|safe}}>
     {%for option in options%}
     <option value="{{option.value}}" >{{option.name}}</option>
     {%endfor%}

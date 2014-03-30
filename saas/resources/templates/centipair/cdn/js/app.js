@@ -11,7 +11,7 @@ app.config(['$routeProvider', function($routeProvider) {
     $routeProvider.
 	when('/', {templateUrl: '/admin/dashboard', controller:"AdminCtrl"}).
 	when('/sites', {templateUrl: '/admin/sites', controller:"SitesCtrl"}).
-	when('/sites/edit/:id', {templateUrl: function(params){return '/admin/sites/edit/'+params.id}, controller:"SitesCtrl"}).
+	when('/sites/edit/:id', {templateUrl: function(params){return '/admin/sites/edit/'+params.id}, controller:"SiteEditCtrl"}).
 	otherwise({templateUrl: '/admin/404',controller:"Admin404Ctrl"});
 }]);
 
@@ -47,7 +47,7 @@ app.controller('Admin404Ctrl', function($scope, $controller){
     }
 });
 
-app.controller('SiteCtrl', function($scope, $controller){
+app.controller('SiteEditCtrl', function($scope, $controller){
     $controller('AdminCtrl', {$scope:$scope});
     $scope.page.title = "Site controller"
     $scope.siteData = {};
