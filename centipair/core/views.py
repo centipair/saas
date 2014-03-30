@@ -138,13 +138,17 @@ class CoreFormView(FormView):
         # We make sure to call the parent's form_valid() method because
         # it might do some processing (in the case of CreateView, it will
         # call form.save() for example).
+        return self.execute(form, form.request)
+        """
         try:
             return self.execute(form, form.request)
         except:
             self.response_json["status"] = 500
             self.response_json["message"] = self.system_error_message
-            return self.render_to_json_response(self.response_json, status=500)
-            #TODO: Log this error for future debugging
+            return self.render_to_json_response(self.response_json,
+                                                status=500)
+        """
+        #TODO: Log this error for future debugging
 
     def execute(self, form, request):
         """

@@ -5,7 +5,6 @@ from centipair.core.models import Site
 from centipair.core.template_processor import render_template
 from centipair.admin.serializers import SiteSerializer
 from centipair.admin.forms import SiteForm
-from django.db.models import get_model
 
 
 class SiteAdminView(AuthView):
@@ -53,6 +52,9 @@ class SitesEdit(SiteAdminFormView):
         return render_template(request, "site_form.html",
                                app=self.app,
                                context={"form": form})
+
+    def execute(self, form, request):
+        return JSONResponse(form.save())
 
 
 class SitesMineData(SiteAdminView):

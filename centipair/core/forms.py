@@ -78,6 +78,34 @@ class AngularInput(forms.Widget):
         return mark_safe(template)
 
 
+class ObjectForm(forms.Form):
+    def __init__(self, *args, **kwargs):
+        self.request = kwargs.pop('request', None)
+        self.new = False
+        super(ObjectForm, self).__init__(*args, **kwargs)
+
+    id = forms.IntegerField(widget=AngularInput(input_type="hidden"))
+
+    def save(self):
+        if self.cleaned_data['id'] == 0:
+            self.new = True
+        if self.cleaned_data["id"] == u'':
+            self.new = True
+        if not self.cleaned_data["id"]:
+            self.new = True
+
+        if self.new:
+            return self.create()
+        else:
+            return self.update()
+
+    def create(self):
+        return {'message': 'nothing created'}
+
+    def update(self):
+        return {'message': 'nothing updated'}
+
+
 class ImageForm(forms.Form):
 
     def __init__(self, *args, **kwargs):
