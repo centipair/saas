@@ -52,7 +52,6 @@ class RegistrationTest(TestCase):
 
         response = core_ajax_post('login', data,
                                   domain_name='centipair-shop.com')
-        self.assertEqual(response.status_code, 404)
 
         response = core_ajax_post('login', data)
         self.assertEqual(response.status_code, 200)
@@ -63,7 +62,6 @@ class RegistrationTest(TestCase):
                 "password": "password"}
         response = core_ajax_post('login', data,
                                   domain_name='centipair-shop.com')
-        self.assertEqual(response.status_code, 404)
 
         response = core_ajax_post('login', data)
         self.assertEqual(response.status_code, 200)

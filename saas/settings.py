@@ -196,4 +196,4 @@ DEFAULT_APP = APPS['CORE']
 SITE_ROLES = {'EDITOR': 'editor',
               'ADMIN': 'admin',
               'USER': 'user',
-              'None': 'none'}
+              'NONE': 'none'}
