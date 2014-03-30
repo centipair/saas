@@ -4,7 +4,7 @@ from django.utils.translation import ugettext as _
 from django.shortcuts import render
 from django.conf import settings
 from centipair.core.cache import AppMirror, get_app_cache, get_site_cache,\
-    get_site_apps_cache, get_site_app_cache
+    get_site_apps_cache, get_site_app_cache, get_site_user_cache
 
 
 class SiteMirror(object):
@@ -44,5 +44,6 @@ class SiteMiddleware:
         site = SiteMirror(request)
         if site.exists:
             request.site = site
+            request.site_user = get_site_user_cache(request)
         else:
             return site.not_found()

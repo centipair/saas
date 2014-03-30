@@ -13,6 +13,7 @@ import os
 import sys
 from secret_settings import *
 from local_settings import *
+from django.contrib import messages
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 
 # Quick-start development settings - unsuitable for production
@@ -153,6 +154,13 @@ USE_L10N = True
 
 USE_TZ = True
 
+MESSAGE_TAGS = {
+    messages.DEBUG: 'debug',
+    messages.INFO: 'info',
+    messages.SUCCESS: 'success',
+    messages.WARNING: 'warning',
+    messages.ERROR: 'danger'}
+
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.6/howto/static-files/
@@ -187,4 +195,5 @@ DEFAULT_APP = APPS['CORE']
 
 SITE_ROLES = {'EDITOR': 'editor',
               'ADMIN': 'admin',
-              'USER': 'user'}
+              'USER': 'user',
+              'None': 'none'}

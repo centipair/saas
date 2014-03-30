@@ -1,4 +1,12 @@
 from centipair.core.models import Site, App, SiteUser
+from django.conf import settings
+
+
+def to_dict(obj):
+    dict_obj = obj.__dict__
+    if '_state' in dict_obj:
+        del dict_obj['_state']
+    return dict_obj
 
 
 class AppMirror(object):
@@ -10,11 +18,29 @@ class AppMirror(object):
         self.site_id = app_dict["site_id"]
 
 
-def to_dict(obj):
-    dict_obj = obj.__dict__
-    if '_state' in dict_obj:
-        del dict_obj['_state']
-    return dict_obj
+class SiteUserMirror(object):
+    def __init__(self, user_dict, *args, **kwargs):
+        if not user_dict:
+            self.role = settings.SITE_ROLES['NONE']
+        else:
+            self.role = user_dict['role']
+            self.username = user_dict['username']
+            self.email = user_dict['email']
+            self.user_id = user_dict['user_id']
+
+
+def get_site_user_cache(request):
+    if not request.user.is_authenticated():
+        return SiteUserMirror(None)
+    try:
+        #TODO: implement cache if possible
+        site_user = SiteUser.objects.get(user_id=request.user.id,
+                                         site_id=request.site.id)
+        site_user_mirror = SiteUserMirror(to_dict(site_user))
+        return site_user_mirror
+
+    except SiteUser.DoesNotExist:
+        return None
 
 
 def valid_site_role_cache(request, role):

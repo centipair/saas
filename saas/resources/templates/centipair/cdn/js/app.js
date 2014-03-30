@@ -62,7 +62,7 @@ app.controller('SitesCtrl', function($scope, $controller){
     $scope.getDataService('/admin/sites/mine');
     $scope.editUrl = '/sites/edit/';
     $scope.getCallback = function(data){
-	$scope.siteData = data.data;
+	$scope.siteData = data;
     }
 });
 
@@ -92,7 +92,8 @@ app.service("PostData", function($http, $q, Notifier){
 	    {url: url, 
 	     data: data,
 	     method: 'POST',
-	     headers : {'Content-Type':'application/x-www-form-urlencoded; charset=UTF-8'}
+	     headers : {'Content-Type':'application/x-www-form-urlencoded; charset=UTF-8',
+			"X-Requested-With":"XMLHttpRequest"}
 	    }).error(function (data, status) {
 		response = {data: data, status: status};
 		deferred.reject(response);
@@ -204,13 +205,13 @@ app.controller('SubmitCtrl', function($scope, $controller, $http, PostData, GetD
 	submit_data = $scope.form;
 	submit_data["csrfmiddlewaretoken"] = document.getElementsByName('csrfmiddlewaretoken')[0].value;
 	$scope.response  = PostData.submitForm(url, $.param(submit_data)).then(
-	    function (data){
+	    function (response){
 		//this is success data
 		$scope.submitButton.disabled=false;
 		$scope.notify(200)
-		$scope.callback(data);
+		$scope.callback(response.data);
 	    },
-	    function (data){
+	    function (response){
 		//this is invoked during error
 		$scope.submitButton.disabled=false;
 		data = response.data;
@@ -242,12 +243,12 @@ app.controller('SubmitCtrl', function($scope, $controller, $http, PostData, GetD
     };
     $scope.getDataService = function(url, data){
 	$scope.getData  = GetData.getData(url).then(
-	    function (data){
+	    function (response){
 		//this is success data
 		$scope.notify(200);
-		$scope.getCallback(data);
+		$scope.getCallback(response.data);
 	    },
-	    function (data){
+	    function (response){
 		//this is invoked during error
 		data = response.data;
 		status = response.status;
@@ -272,7 +273,7 @@ app.controller('LoginCtrl', function($scope, $controller){
     $controller('SubmitCtrl', {$scope:$scope});
     $scope.loaderMessage = "Logging in...";
     $scope.callback = function(data){
-	window.location = "/admin"
+	window.location = data.redirect;
     }
 });
 

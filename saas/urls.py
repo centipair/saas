@@ -20,6 +20,7 @@ urlpatterns = patterns(
     url(r'^$', 'centipair.core.views.home', name='home'),
     url(r'^register$', RegistrationView.as_view(), name='registration'),
     url(r'^login/?$', LoginView.as_view(), name='login'),
+    url(r'^logout/?$', 'centipair.core.views.logout_view', name='logout'),
     url(r'^pricing$', 'centipair.core.views.core_pricing', name='pricing'),
     url(r'^cdn/(?P<source>.+)$', 'centipair.core.views.cdn_redirect',
         name='cdn_redirect'),
