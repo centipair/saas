@@ -1,13 +1,13 @@
 <!DOCTYPE html>
 <html language="en" ng-app="app">
-
+  {% load i18n %} 
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title ng-controller="AdminCtrl" ng-cloak>Site Administration | [{page.title}]</title>
+    <title ng-controller="AdminCtrl" ng-cloak>{%trans "Site Administration"%} | [{page.title}]</title>
 
     <!-- Bootstrap core CSS -->
     <link href="/core-cdn/site-admin/css/bootstrap.css" rel="stylesheet">
@@ -22,7 +22,6 @@
 </head>
 
 <body>
-
     <div id="wrapper">
 
         <!-- Sidebar -->

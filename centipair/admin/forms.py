@@ -8,7 +8,7 @@ class SiteForm(forms.Form):
     name = forms.CharField(
         widget=AngularInput(label=_('Site name')))
     default_app = forms.CharField(widget=SelectInput(
-        label="Default Application",
+        label=_("Default Application"),
         options=SITE_APPS
     ))
     domain_name = forms.CharField(

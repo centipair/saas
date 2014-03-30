@@ -1,6 +1,7 @@
 {%extends centipair_base_template %}
 {%block content%}
-<h2>New account registration</h2>
+{% load i18n %} 
+<h2>{% trans "New account registration" %}</h2>
 <div class="row">
   <div class="col-md-4">
     <form ng-controller="RegisterCtrl">
@@ -13,7 +14,7 @@
       {{form.email}}
       {{form.tos}}
       {{form.check}}
-      <button submit url="/register" class="btn btn-primary">Register</button>
+      <button submit url="/register" class="btn btn-primary">{% trans "Register" %}</button>
     <form>
   </div>
 </div>

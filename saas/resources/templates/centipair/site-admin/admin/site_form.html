@@ -1,4 +1,5 @@
-<h2>Site Manager</h2>
+{% load i18n %} 
+<h2>{%trans "Site Manager"%}</h2>
 <div ng-controller="SiteEditCtrl">
   <div class="col-md-4">
     <form>
@@ -9,7 +10,7 @@
       {{form.domain_name}}
       {{form.default_app}}
       
-      <button submit url="/admin/sites/edit/" class="btn btn-primary" ng-disabled="submitButton.disabled">Submit</button>
+      <button submit url="/admin/sites/edit/" class="btn btn-primary" ng-disabled="submitButton.disabled">{%trans "Save"%}</button>
       {{form.id}}
     <form>
   </div>

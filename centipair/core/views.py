@@ -86,6 +86,11 @@ class CoreFormView(FormView):
     login_required = False
     #dummy form since this is not used probably
     template_name = 'dummy.html'
+    request_type = "all"
+
+    def check_request_type(self, request):
+        print request.is_ajax()
+        return
 
     def has_app(self, request):
         if self.app in request.site.apps:
@@ -106,7 +111,6 @@ class CoreFormView(FormView):
             return True
 
     def dispatch(self, request, *args, **kwargs):
-
         if not self.has_app(request):
             return HttpResponse('app not found', status=404)
 
