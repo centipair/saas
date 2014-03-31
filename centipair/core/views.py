@@ -89,7 +89,6 @@ class CoreFormView(FormView):
     request_type = "all"
 
     def check_request_type(self, request):
-        print request.is_ajax()
         return
 
     def has_app(self, request):

@@ -46,6 +46,5 @@ class SiteMiddleware:
         if site.exists:
             request.site = site
             request.site_user = get_site_user_cache(request)
-            print request.site_user
         else:
             return site.not_found()

@@ -38,7 +38,7 @@ def get_site_user_cache(request):
         return site_user_mirror
 
     except SiteUser.DoesNotExist:
-        return None
+        return SiteUserMirror(None)
 
 
 def valid_site_role_cache(request, role):

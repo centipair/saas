@@ -340,7 +340,6 @@ class LoginForm(forms.Form):
     ))
 
     def clean(self):
-        print self.request.site.is_core
         if 'username' in self.cleaned_data:
             username = self.cleaned_data["username"]
         else:
