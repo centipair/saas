@@ -276,19 +276,9 @@ class RegistrationForm(forms.Form):
                 template_dir=user.username,
                 default_app=settings.APPS['CMS'],
                 active=True,
-                domain_name=service_domain_name + "." +
-                settings.CORE_DOMAIN_NAME
+                domain_name=service_domain_name
             )
             site.save()
-            core_site_user = SiteUser(
-                username=self.cleaned_data["username"],
-                email=user.email,
-                site_id=self.request.site.id,
-                role=settings.SITE_ROLES['USER'],
-                user=user,
-                core_activation_code=unique_name(user.username)
-            )
-            core_site_user.save()
             site_user = SiteUser(
                 username=self.cleaned_data["username"],
                 email=user.email,
@@ -302,9 +292,17 @@ class RegistrationForm(forms.Form):
                 template_dir='cms',
                 site=site,
                 app=settings.APPS['CMS'],
-                domain_name=service_domain_name)
+                domain_name=service_domain_name,
+                subdomain_name='www'
+            )
             cms_app.save()
-        return
+            site_admin_app = App(
+                template_name='admin',
+                template_dir='site-admin',
+                site=site,
+                app=settings.APPS['SITE-ADMIN'])
+            site_admin_app.save()
+            return
 
 
 class AccountActivationForm(forms.Form):
