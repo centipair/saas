@@ -67,7 +67,8 @@ def create_localhost():
 
 def create_store_app(site):
     cms_app, create = App.objects.get_or_create(
-        domain_name='centipair-shop.com',
+        domain_name=site.domain_name,
+        subdomain_name='www',
         template_name='business-casual',
         template_dir='cms',
         site=site,
@@ -75,7 +76,8 @@ def create_store_app(site):
     cms_app.save()
 
     store_app, create = App.objects.get_or_create(
-        domain_name='store.centipair-shop.com',
+        domain_name='store.' + site.domain_name,
+        subdomain_name='store',
         template_name='shop-homepage',
         template_dir='store',
         site=site,
@@ -83,21 +85,22 @@ def create_store_app(site):
     store_app.save()
 
     blog_app, create = App.objects.get_or_create(
-        domain_name='blog.centipair-shop.com',
+        domain_name='blog.' + site.domain_name,
+        subdomain_name='blog',
         template_name='blog-home',
         template_dir='blog',
         site=site,
         app=settings.APPS['BLOG'])
     blog_app.save()
     support_app, create = App.objects.get_or_create(
-        domain_name='support.centipair-shop.com',
+        domain_name='support.' + site.domain_name,
+        subdomain_name='support',
         template_name='simple-sidebar',
         template_dir='support',
         site=site,
         app=settings.APPS['SUPPORT'])
     support_app.save()
     site_admin_app, create = App.objects.get_or_create(
-        domain_name='',
         template_name='admin',
         template_dir='site-admin',
         site=site,

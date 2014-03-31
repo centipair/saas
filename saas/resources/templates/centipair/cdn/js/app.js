@@ -51,10 +51,13 @@ app.controller('SiteEditCtrl', function($scope, $controller){
     $controller('AdminCtrl', {$scope:$scope});
     $scope.page.title = "Site controller"
     $scope.siteData = {};
+    $scope.loaderMessage="Saving..";
     $scope.callback = function(data){
 	console.log('Site Callback');
     }
+
 });
+
 
 app.controller('SitesCtrl', function($scope, $controller){
     $controller('AdminCtrl', {$scope:$scope});

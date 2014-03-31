@@ -15,13 +15,6 @@ from centipair.core.utilities import unique_name, generate_username, \
 from centipair.core.models import Site, SiteUser, App
 
 
-SITE_APPS = [
-    {'name': 'Website', 'value': 'cms'},
-    {'name': 'Store', 'value': 'store'},
-    {'name': 'Blog', 'value': 'blog'},
-    {'name': 'Support Forum', 'value': 'support'}]
-
-
 class SelectInput(forms.Widget):
     def __init__(self, *args, **kwargs):
         self.ng_init = ""

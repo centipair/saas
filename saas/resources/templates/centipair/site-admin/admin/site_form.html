@@ -1,5 +1,5 @@
-{% load i18n %} 
-<div class="page-content inset">
+{% load i18n %}
+{% load admin_tags %}
   <div id="site-details" class="row">
     <h2>{%trans "Site Manager"%}</h2>
     <div class="alert alert-warning"><strong>{%trans "Warning!"%}</strong> 
@@ -30,13 +30,13 @@
 	  <th>Active</th>
 	</tr>
       {%for app in apps%}
-      <tr>
-	<td>{{app.app}}</td>
-	<td>{{app.domain_name}}</td>
-	<td>{{app.is_active}}<i class="fa fa-check-circle" style="color:green"></i></td>
+      <tr class="data-row" ng-click="editApp({{app.id}})">
+	<td>{{app.app|app_name}}</td>
+	
+	<td><input type="text" value="{{app.subdomain_name}}" style="width:100px;"/>.[{form.domain_name}]</td>
+	<td>{{app.is_active|active_label|safe}}</td>
       </tr>
       {%endfor%}
       </table>
     </div>
   </div>
-</div>

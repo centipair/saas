@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html language="en" ng-app="app">
-  {% load i18n %} 
+  {% load i18n %}
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -52,8 +52,9 @@
 	<div ng-controller="NotifierCtrl" class="notify [{notifier.class}]" ng-show="notifier.show"  ng-cloak>
 	  [{notifier.message}]
 	</div>
-        <div id="page-content-wrapper" ng-view>
-          
+        <div id="page-content-wrapper" >
+          <div class="page-content inset" ng-view>
+	  </div>
         </div>
 
     </div>

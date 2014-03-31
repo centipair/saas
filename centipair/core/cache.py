@@ -85,7 +85,7 @@ def get_site_app(site_id, app):
 
 def get_site_apps_cache(site_id):
     #TODO: implement cache here
-    app_objects = App.objects.filter(site_id=site_id)
+    app_objects = App.objects.filter(site_id=site_id).exclude(is_active=False)
     apps = []
     for app in app_objects:
         apps.append(app.app)

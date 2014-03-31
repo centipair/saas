@@ -12,4 +12,5 @@ urlpatterns = patterns(
     url(r'^sites$', SitesPage.as_view(), name='sites'),
     url(r'^sites/mine$', SitesMineData.as_view(), name='sites-mine'),
     url(r'^sites/edit/(?P<id>\d+)?$', SitesEdit.as_view(), name='site-edit'),
+    url(r'^sites/app/edit/(?P<id>\d+)?$', AppEdit.as_view(), name='app-edit'),
 )

@@ -1,0 +1,22 @@
+{% load i18n %}
+{% load admin_tags %}
+  <div id="site-details" class="row">
+    <h2>{%trans "App Manager"%}</h2>
+    <div class="alert alert-warning"><strong>{%trans "Warning!"%}</strong> 
+      {%trans "Changing app status to inactive will disable the application"%}</div>
+    <div class="col-md-4">
+      
+      <form>
+	<div ng-show="allErrors" class="form-group has-error">
+	  <label class="control-label">[{errors.__all__}]</label>
+	</div>
+	{{form.domain_name}}
+	{{form.is_active}}
+	{{form.default_app}}
+	
+	<button submit url="/admin/sites/edit/" class="btn btn-primary" ng-disabled="submitButton.disabled">{%trans "Save"%}</button>
+	{{form.id}}
+	<form>
+	  
+    </div>
+  </div>

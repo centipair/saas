@@ -1,5 +1,6 @@
 from django.conf import settings
 from django.http import HttpResponse
+from django.db.models import Q
 from centipair.core.views import AuthView, CoreFormView, JSONResponse
 from centipair.core.models import Site, App
 from centipair.core.template_processor import render_template
@@ -45,17 +46,36 @@ class SitesEdit(SiteAdminFormView):
     form_class = SiteForm
 
     def get(self, request, id, *args, **kwargs):
-        site = Site.objects.get(is_core=False,
-                                siteuser__user=request.user,
-                                siteuser__role=self.role)
+        try:
+            site = Site.objects.get(
+                pk=id,
+                is_core=False,
+                siteuser__user=request.user,
+                siteuser__role=self.role)
+        except Site.DoesNotExist:
+            return HttpResponse('Site not found', status=404)
         form = SiteForm(initial=site.__dict__)
-        apps = App.objects.filter(site=site)
+        apps = App.objects.filter(site=site).exclude(
+            app=settings.APPS['SITE-ADMIN'])
         return render_template(request, "site_form.html",
                                app=self.app,
                                context={"form": form, "apps": apps})
 
     def execute(self, form, request):
         return JSONResponse(form.save())
+
+
+class AppEdit(SiteAdminFormView):
+    def get(self, request, id, *args, **kwargs):
+        #try:
+        #except App.DoesNotExist:
+        return render_template(request,
+                               "app_form.html",
+                               app=self.app,
+                               context = {"form":form})
+
+    def execute(self, form, request):
+        return
 
 
 class SitesMineData(SiteAdminView):
