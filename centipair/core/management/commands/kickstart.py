@@ -41,7 +41,7 @@ def create_core_app(site):
         app=settings.APPS['CORE'])
 
     site_admin_app, create = App.objects.get_or_create(
-        domain_name='localhost.com',
+        domain_name='',
         template_name='admin',
         template_dir='site-admin',
         site=site,
@@ -53,7 +53,8 @@ def create_localhost():
         name='localhost',
         template_dir='centipair',
         default_app=settings.APPS['CORE'],
-        domain_name='localhost'
+        domain_name='localhost',
+        is_core=True
     )
     if created:
         print (_("Local site created"))
@@ -119,14 +120,14 @@ def create_test_store(core_site):
     site, created = Site.objects.get_or_create(
         name="my shop",
         default_app=settings.APPS['CMS'],
-        template_dir='centipair-shop.com'
+        template_dir='centipair-shop.com',
+        domain_name='centipair-shop.com'
     )
     if created:
         print (_("New store created"))
     create_store_app(site)
     user = store_user()
     create_site_user("seller", user, site, settings.SITE_ROLES["ADMIN"])
-    create_site_user("seller", user, core_site, settings.SITE_ROLES["ADMIN"])
     return
 
 

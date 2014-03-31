@@ -34,9 +34,7 @@ def get_site_user_cache(request):
         return SiteUserMirror(None)
     try:
         #TODO: implement cache if possible
-        site_user = SiteUser.objects.get(user_id=request.user.id,
-                                         site_id=request.site.id)
-        site_user_mirror = SiteUserMirror(to_dict(site_user))
+        site_user_mirror = SiteUserMirror(to_dict(request.user.siteuser))
         return site_user_mirror
 
     except SiteUser.DoesNotExist:

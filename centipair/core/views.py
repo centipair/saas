@@ -98,10 +98,22 @@ class CoreFormView(FormView):
         else:
             return False
 
+    def valid_site_role(self, request):
+        if self.request.site.is_core:
+            if self.request.site_user.role == self.role:
+                return True
+            else:
+                return False
+        else:
+            if valid_site_role_cache(request, self.role):
+                return True
+            else:
+                return False
+
     def logged_in(self, request):
         if self.login_required:
             if request.user.is_authenticated():
-                if valid_site_role_cache(request, self.role):
+                if self.valid_site_role(request):
                     return True
                 else:
                     return False

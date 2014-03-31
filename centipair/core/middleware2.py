@@ -32,6 +32,7 @@ class SiteMirror(object):
         self.name = site["name"]
         self.template_dir = site["template_dir"]
         self.domain_name = site["domain_name"]
+        self.is_core = site["is_core"]
         self.apps = get_site_apps_cache(self.id)
 
     def not_found(self):
@@ -45,5 +46,6 @@ class SiteMiddleware:
         if site.exists:
             request.site = site
             request.site_user = get_site_user_cache(request)
+            print request.site_user
         else:
             return site.not_found()

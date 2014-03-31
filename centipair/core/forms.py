@@ -340,6 +340,7 @@ class LoginForm(forms.Form):
     ))
 
     def clean(self):
+        print self.request.site.is_core
         if 'username' in self.cleaned_data:
             username = self.cleaned_data["username"]
         else:
@@ -353,8 +354,14 @@ class LoginForm(forms.Form):
             # Check whether the provided username is email
             email_check = EmailField()
             email = email_check.clean(username)
-            site_user = SiteUser.objects.get(email=email,
-                                             site_id=self.request.site.id)
+            if self.request.site.is_core:
+                site_users = SiteUser.objects.filter(
+                    email=email,
+                    role=settings.SITE_ROLES['ADMIN'])
+                site_user = site_users[0]
+            else:
+                site_user = SiteUser.objects.get(email=email,
+                                                 site_id=self.request.site.id)
             unique_username = site_user.user.username
         except SiteUser.DoesNotExist:
             # Email does not exist in the current site
@@ -362,8 +369,15 @@ class LoginForm(forms.Form):
         except forms.ValidationError:
             # Not an email. Probably user is trying to login via username
             try:
-                site_user = SiteUser.objects.get(username=username,
-                                                 site_id=self.request.site.id)
+                if self.request.site.is_core:
+                    site_users = SiteUser.objects.filter(
+                        username=username,
+                        role=settings.SITE_ROLES['ADMIN'])
+                    site_user = site_users[0]
+                else:
+                    site_user = SiteUser.objects.get(
+                        username=username,
+                        site_id=self.request.site.id)
                 unique_username = site_user.user.username
             except SiteUser.DoesNotExist:
                 #User name does not exist in current database
