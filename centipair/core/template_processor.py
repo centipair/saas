@@ -33,9 +33,8 @@ def render_template(request, template_file,
         if app == settings.APPS['SITE-ADMIN'] or \
            app == settings.APPS['CORE']:
             site_template_dir = settings.CENTIPAIR_TEMPLATE_DIR
-        #TODO: use this setup when a stable version is out
-        #else:
-        #    site_template_dir = 'user-templates/' + site_template_dir
+        else:
+            site_template_dir = 'user-templates/' + site_template_dir
     else:
         app_obj = request.site.requested_app
 
