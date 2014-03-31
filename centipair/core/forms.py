@@ -13,6 +13,7 @@ import os
 from centipair.core.utilities import unique_name, generate_username, \
     generate_service_domain_name
 from centipair.core.models import Site, SiteUser, App
+from centipair.core.templates import initialize_template
 
 
 class SelectInput(forms.Widget):
@@ -302,6 +303,7 @@ class RegistrationForm(forms.Form):
                 site=site,
                 app=settings.APPS['SITE-ADMIN'])
             site_admin_app.save()
+            initialize_template(user.username)
             return
 
 
