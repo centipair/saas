@@ -1,7 +1,7 @@
 from django.conf import settings
 from django.http import HttpResponse
 from centipair.core.views import AuthView, CoreFormView, JSONResponse
-from centipair.core.models import Site
+from centipair.core.models import Site, App
 from centipair.core.template_processor import render_template
 from centipair.admin.serializers import SiteSerializer
 from centipair.admin.forms import SiteForm
@@ -49,9 +49,10 @@ class SitesEdit(SiteAdminFormView):
                                 siteuser__user=request.user,
                                 siteuser__role=self.role)
         form = SiteForm(initial=site.__dict__)
+        apps = App.objects.filter(site=site)
         return render_template(request, "site_form.html",
                                app=self.app,
-                               context={"form": form})
+                               context={"form": form, "apps": apps})
 
     def execute(self, form, request):
         return JSONResponse(form.save())

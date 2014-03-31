@@ -50,6 +50,7 @@ class App(models.Model):
     app = models.CharField(max_length=64)
     domain_name = models.CharField(max_length=1024,
                                    null=True, blank=True)
+    is_active = models.BooleanField(default=True)
 
 
 #TODO: move this to cms app

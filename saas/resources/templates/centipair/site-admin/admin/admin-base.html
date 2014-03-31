@@ -14,7 +14,8 @@
 
     <!-- Add custom CSS here -->
     <link href="/core-cdn/site-admin/css/simple-sidebar.css" rel="stylesheet">
-    <link href="/core-cdn/font-awesome/css/font-awesome.min.css" rel="stylesheet">
+    <!--<link href="/core-cdn/font-awesome/css/font-awesome.min.css" rel="stylesheet">-->
+    <link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
     <link href="/core-cdn/css/custom.css" rel="stylesheet">
     <script src="/core-cdn/js/angular.js"></script>
     <script src="/core-cdn/js/angular-route.js"></script>
@@ -51,8 +52,8 @@
 	<div ng-controller="NotifierCtrl" class="notify [{notifier.class}]" ng-show="notifier.show"  ng-cloak>
 	  [{notifier.message}]
 	</div>
-        <div id="page-content-wrapper" ng-view style="padding:5px 10px 10px 10px;">
-        
+        <div id="page-content-wrapper" ng-view>
+          
         </div>
 
     </div>

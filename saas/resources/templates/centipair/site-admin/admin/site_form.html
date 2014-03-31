@@ -1,18 +1,42 @@
 {% load i18n %} 
-<h2>{%trans "Site Manager"%}</h2>
-<div class="alert alert-warning"><strong>{%trans "Warning!"%}</strong> Changing domain name will take many hours to reflect on the website</div>
-<div ng-controller="SiteEditCtrl">
-  <div class="col-md-4">
-    <form>
-      <div ng-show="allErrors" class="form-group has-error">
-	<label class="control-label">[{errors.__all__}]</label>
-      </div>
-      {{form.name}}
-      {{form.domain_name}}
-      {{form.default_app}}
+<div class="page-content inset">
+  <div id="site-details" class="row">
+    <h2>{%trans "Site Manager"%}</h2>
+    <div class="alert alert-warning"><strong>{%trans "Warning!"%}</strong> 
+      {%trans "Changing domain name may take many hours to reflect on the website"%}</div>
+    <div class="col-md-4">
       
-      <button submit url="/admin/sites/edit/" class="btn btn-primary" ng-disabled="submitButton.disabled">{%trans "Save"%}</button>
-      {{form.id}}
-    <form>
+      <form>
+	<div ng-show="allErrors" class="form-group has-error">
+	  <label class="control-label">[{errors.__all__}]</label>
+	</div>
+	{{form.name}}
+	{{form.domain_name}}
+	{{form.default_app}}
+	
+	<button submit url="/admin/sites/edit/" class="btn btn-primary" ng-disabled="submitButton.disabled">{%trans "Save"%}</button>
+	{{form.id}}
+	<form>
+	  
+    </div>
+  </div>
+  <div id="installed-apps" class="row">
+    <h2>{%trans "Apps available" %}</h2>
+    <div class="col-md-6">
+      <table class="table table-hover">
+	<tr>
+	  <th>Name</th>
+	  <th>Domain Name</th>
+	  <th>Active</th>
+	</tr>
+      {%for app in apps%}
+      <tr>
+	<td>{{app.app}}</td>
+	<td>{{app.domain_name}}</td>
+	<td>{{app.is_active}}<i class="fa fa-check-circle" style="color:green"></i></td>
+      </tr>
+      {%endfor%}
+      </table>
+    </div>
   </div>
 </div>
