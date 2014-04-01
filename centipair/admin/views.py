@@ -72,7 +72,7 @@ class AppEdit(SiteAdminFormView):
         return render_template(request,
                                "app_form.html",
                                app=self.app,
-                               context = {"form":form})
+                               context={})
 
     def execute(self, form, request):
         return
@@ -85,3 +85,13 @@ class SitesMineData(SiteAdminView):
                                     siteuser__role=self.role)
         sites_serialized = SiteSerializer(sites, many=True)
         return JSONResponse(sites_serialized.data)
+
+
+class Templates(SiteAdminView):
+    def get(self, request, *args, **kwargs):
+        return HttpResponse('Templates')
+
+
+class Pages(SiteAdminView):
+    def get(self, request, *args, **kwargs):
+        return HttpResponse('Pages')

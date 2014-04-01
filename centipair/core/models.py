@@ -53,23 +53,3 @@ class App(models.Model):
     subdomain_name = models.CharField(max_length=1024,
                                       null=True, blank=True)
     is_active = models.BooleanField(default=True)
-
-
-#TODO: move this to cms app
-"""
-class Page(models.Model):
-    title = models.CharField(max_length=1024)
-    description = models.TextField(max_length=1024,
-                                   blank=True,
-                                   null=True)
-    edited_date = models.DateTimeField(auto_now_add=True)
-    url = models.CharField(max_length=1024)
-    meta_description = models.CharField(max_length=150,
-                                        null=True,
-                                        blank=True)
-    editor = models.ForeignKey(User)
-    site = models.ForeignKey(Site)
-
-    def __unicode__(self):
-        return u'%s' % (self.name)
-"""
