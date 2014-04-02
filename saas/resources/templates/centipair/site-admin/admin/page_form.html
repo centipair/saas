@@ -1,0 +1,17 @@
+{% load i18n %}
+  <h2>{%trans "Page Manager"%}</h2>
+  <form ng-controller="PageEditCtrl">
+    <div ng-show="allErrors" class="form-group has-error">
+      <label class="control-label">[{errors.__all__}]</label>
+    </div>
+    {{form.site}}
+    {{form.title}}
+    {{form.url}}
+    {{form.description}}
+    {{form.meta_description}}
+    {{form.meta_keywords}}
+    
+    <button submit url="/admin/cms/page" class="btn btn-primary" ng-disabled="submitButton.disabled">{%trans "Save"%}</button>
+    {{form.id}}
+    
+  </form>

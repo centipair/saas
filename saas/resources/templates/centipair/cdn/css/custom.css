@@ -28,3 +28,8 @@
     background-color: #E74C3C;
     border-color: #E74C3C;
 }
+
+.custom-header{
+    font-size: 24px;
+    font-weight: strong;
+}

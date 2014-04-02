@@ -86,10 +86,6 @@ class CoreFormView(FormView):
     login_required = False
     #dummy form since this is not used probably
     template_name = 'dummy.html'
-    request_type = "all"
-
-    def check_request_type(self, request):
-        return
 
     def has_app(self, request):
         if self.app in request.site.apps:
@@ -141,6 +137,7 @@ class CoreFormView(FormView):
         return HttpResponse(data, **response_kwargs)
 
     def form_invalid(self, form):
+        print "form invalid called"
         self.response_json["errors"] = form.errors
         self.response_json["message"] = self.form_error_message
         return self.render_to_json_response(self.response_json, status=422)

@@ -64,6 +64,7 @@ INSTALLED_APPS = (
     'south',
     'rest_framework',
     'centipair.core',
+    'centipair.cms',
     'centipair.admin',
 )
 

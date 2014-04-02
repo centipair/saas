@@ -68,7 +68,36 @@ class AngularInput(forms.Widget):
     def render(self, name, value, attrs=None):
         if value:
             self.ng_init = "ng-init=\"form.%s='%s'\"" % (name, value)
-        template = '<div class="form-group [{errors.%(name)sClass}]" ><label for="%(name)s">%(label)s</label><input type="%(input_type)s" class="form-control" id="%(name)s" placeholder="%(placeholder)s" ng-model="form.%(name)s" %(ng_init)s><label class="control-label">[{errors.%(name)s}]</label></div>' % {"label": self.label, "placeholder": self.placeholder, "input_type": self.input_type, "name": name, "ng_init": self.ng_init}
+        template = '<div class="form-group [{errors.%(name)sClass}]" ><label for="%(name)s">%(label)s</label><input type="%(input_type)s" class="form-control" id="%(name)s" placeholder="%(placeholder)s" ng-model="form.%(name)s" %(ng_init)s /><label class="control-label">[{errors.%(name)s}]</label></div>' % {"label": self.label, "placeholder": self.placeholder, "input_type": self.input_type, "name": name, "ng_init": self.ng_init}
+        return mark_safe(template)
+
+
+class AngularTextArea(forms.Widget):
+    def __init__(self, *args, **kwargs):
+        """A widget that can be used as AngularJs web input
+
+        kwargs:
+        label -- label for the input
+        input_type -- type of input (text, checkbox, password..etc)
+        default input type is text
+        placeholder -- html place holder value
+        """
+
+        self.label = ""
+
+        self.placeholder = ""
+        if "label" in kwargs:
+            self.label = kwargs.pop("label")
+        if "placeholder" in kwargs:
+            self.placeholder = kwargs.pop("placeholder")
+        self.ng_init = ""
+
+        super(AngularTextArea, self).__init__(*args, **kwargs)
+
+    def render(self, name, value, attrs=None):
+        if value:
+            self.ng_init = "ng-init=\"form.%s='%s'\"" % (name, value)
+        template = '<div class="form-group [{errors.%(name)sClass}]" ><label for="%(name)s">%(label)s</label><textarea class="form-control" id="%(name)s" placeholder="%(placeholder)s" ng-model="form.%(name)s" %(ng_init)s></textarea><label class="control-label">[{errors.%(name)s}]</label></div>' % {"label": self.label, "placeholder": self.placeholder,"name": name, "ng_init": self.ng_init}
         return mark_safe(template)
 
 
@@ -78,7 +107,8 @@ class ObjectForm(forms.Form):
         self.new = False
         super(ObjectForm, self).__init__(*args, **kwargs)
 
-    id = forms.IntegerField(widget=AngularInput(input_type="hidden"))
+    id = forms.IntegerField(widget=AngularInput(input_type="hidden"),
+                            required=False)
 
     def save(self):
         if self.cleaned_data['id'] == 0:
