@@ -5,9 +5,10 @@ from django.db.models.loading import get_model
 from centipair.core.views import AuthView, CoreFormView, JSONResponse
 from centipair.core.models import Site, App
 from centipair.core.template_processor import render_template
-from centipair.admin.serializers import SiteSerializer, PageSerializer
+from centipair.admin.serializers import SiteSerializer, PageSerializer,\
+    BlogSerializer
 from centipair.admin.forms import SiteForm
-from centipair.cms.forms import PageForm
+from centipair.cms.forms import PageForm, BlogForm
 from centipair.cms.models import Page
 
 
@@ -178,9 +179,23 @@ class Templates(SiteAdminView):
 
 class PageEditView(SiteAdminCRUD):
     form_class = PageForm
-    list_template_name = "pages.html"
+    list_template_name = "page_list.html"
     template_name = "page_form.html"
     serializer = PageSerializer
+    model = Page
+
+    def get(self, request, *args, **kwargs):
+        return self.get_action(request)
+
+    def execute(self, request, form):
+        return HttpResponse('form saved')
+
+
+class BlogEditView(SiteAdminCRUD):
+    form_class = BlogForm
+    list_template_name = "blog_list.html"
+    template_name = "blog_form.html"
+    serializer = BlogSerializer
     model = Page
 
     def get(self, request, *args, **kwargs):

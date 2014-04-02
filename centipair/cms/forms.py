@@ -19,3 +19,19 @@ class PageForm(ObjectForm):
     meta_keywords = forms.CharField(
         widget=AngularInput(label=_('Meta Keywords')),
         required=False)
+
+
+class BlogForm(ObjectForm):
+    site = forms.IntegerField(widget=SelectInput(label=_('Site')))
+    title = forms.CharField(
+        widget=AngularInput(label=_('Title')))
+    url = forms.CharField(widget=AngularInput(label=_('URL')))
+    description = forms.CharField(
+        widget=AngularTextArea(label=_('Description')),
+        required=False)
+    meta_description = forms.CharField(
+        widget=AngularInput(label=_('Meta Description')),
+        required=False)
+    meta_keywords = forms.CharField(
+        widget=AngularInput(label=_('Meta Keywords')),
+        required=False)

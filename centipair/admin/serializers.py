@@ -15,3 +15,11 @@ class PageSerializer(serializers.ModelSerializer):
         fields = ('id', 'title', 'url', 'description',
                   'meta_description', 'meta_keywords',
                   'site')
+
+
+class BlogSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Page
+        fields = ('id', 'title', 'url', 'description',
+                  'meta_description', 'meta_keywords',
+                  'site')

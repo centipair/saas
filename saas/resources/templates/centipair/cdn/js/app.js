@@ -14,9 +14,6 @@ app.config(['$routeProvider', function($routeProvider) {
 	when('/', {templateUrl: '/admin/dashboard', controller:"AdminCtrl"}).
 	when('/sites', {templateUrl: '/admin/sites', controller:"SitesCtrl"}).
 	when('/sites/edit/:id', {templateUrl: function(params){return '/admin/sites/edit/'+params.id}, controller:"SiteEditCtrl"}).
-	when('/page/new', {templateUrl: '/admin/cms/page?action=edit'}).
-	when('/page/edit/:id', {templateUrl: function(params){return '/admin/cms/page?action=edit&id='+params.id;}}).
-	when('/page/list', {templateUrl: '/admin/cms/page?action=list'}).
 	when('/app/:app/:model/:action',  {templateUrl: function(params){
 	    return '/admin/'+params.app+'/'+params.model+'?action='+params.action}}).
 	when('/app/:app/:model/:action/:id', {templateUrl: function(params){
@@ -94,6 +91,30 @@ app.controller('PageListCtrl', function($scope, $controller){
 app.controller('PageEditCtrl', function($scope, $controller){
     $controller('AdminCtrl', {$scope:$scope});
     $scope.page.title = "Page"
+    $scope.siteData = {};
+    $scope.loaderMessage="Saving..";
+    $scope.callback = function(data){
+	console.log('Page Callback');
+    }
+
+});
+
+app.controller('BlogListCtrl', function($scope, $controller){
+    $controller('AdminCtrl', {$scope:$scope});
+    $scope.page.title = "Blog"
+    $scope.siteData = {};
+    $scope.getDataService('/admin/cms/blog?action=list-data');
+    $scope.editUrl = '/blog/edit/';
+    $scope.getCallback = function(data){
+	$scope.pageData = data;
+    }
+
+});
+
+
+app.controller('BlogEditCtrl', function($scope, $controller){
+    $controller('AdminCtrl', {$scope:$scope});
+    $scope.page.title = "Blog"
     $scope.siteData = {};
     $scope.loaderMessage="Saving..";
     $scope.callback = function(data){
