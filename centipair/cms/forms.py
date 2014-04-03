@@ -2,7 +2,7 @@ from django.utils.translation import ugettext_lazy as _
 from django import forms
 from centipair.cms.models import Page
 from centipair.core.forms import AngularInput, SelectInput, AngularTextArea,\
-    ObjectForm
+    ObjectForm, CkEditor
 
 
 class PageForm(ObjectForm):
@@ -11,7 +11,7 @@ class PageForm(ObjectForm):
         widget=AngularInput(label=_('Title')))
     url = forms.CharField(widget=AngularInput(label=_('URL')))
     description = forms.CharField(
-        widget=AngularTextArea(label=_('Description')),
+        widget=CkEditor(label=_('Description')),
         required=False)
     meta_description = forms.CharField(
         widget=AngularInput(label=_('Meta Description')),

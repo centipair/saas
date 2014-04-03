@@ -1,0 +1,10 @@
+<div class="form-group [{errors.{{name}}Class}]">
+  <label for="{{name}}">{{label}}</label>
+  
+  <textarea class="ck-editor" id="{{name}}" ng-model="form.{{name}}" {{ng_init|safe}}></textarea>
+  
+  <label class="control-label">[{errors.{{name}}}]</label>
+</div>
+<script>
+    CKEDITOR.replace('{{name}}');
+</script>

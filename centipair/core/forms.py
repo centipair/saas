@@ -41,6 +41,26 @@ class SelectInput(forms.Widget):
              "ng_init": self.ng_init})
 
 
+class CkEditor(forms.Widget):
+    def __init__(self, *args, **kwargs):
+        self.ng_init = ""
+        if "label" in kwargs:
+            self.label = kwargs.pop("label")
+        else:
+            self.label = ""
+
+        super(CkEditor, self).__init__(*args, **kwargs)
+
+    def render(self, name, value, attrs=None):
+        if value:
+            self.ng_init = 'ng-init="form.%s=\'%s\'"' % (name, value)
+
+        return render_to_string(
+            'widgets/ckeditor.html',
+            {"name": name, "label": self.label,
+             "ng_init": self.ng_init})
+
+
 class AngularInput(forms.Widget):
     def __init__(self, *args, **kwargs):
         """A widget that can be used as AngularJs web input

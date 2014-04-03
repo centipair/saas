@@ -95,7 +95,13 @@ app.controller('PageEditCtrl', function($scope, $controller){
     $scope.loaderMessage="Saving..";
     $scope.callback = function(data){
 	console.log('Page Callback');
-    }
+    };
+    $scope.$on('$routeChangeSuccess', function() {
+	console.log('this is called');
+	var newCKEdit = CKEDITOR.replace('description');
+	CKFinder.setupCKEditor(newCKEdit, '/core-cdn/ckfinder/');
+    });
+
 
 });
 
