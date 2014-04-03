@@ -87,8 +87,28 @@ app.controller('PageListCtrl', function($scope, $controller){
 
 });
 
+app.service("CkEditor", function(){
+    return {initEditor: function(id){
+	
 
-app.controller('PageEditCtrl', function($scope, $controller){
+	CKEDITOR.replace(
+	    id, 
+	    {filebrowserBrowseUrl : '/login',
+	     filebrowserImageBrowseUrl : '/login',
+	     filebrowserFlashBrowseUrl : '/core-cdn/ckfinder/ckfinder.html?type=Flash',
+	     filebrowserUploadUrl : '/file-upload',
+	     filebrowserImageUploadUrl : '/admin/image-upload',
+	     filebrowserFlashUploadUrl : '/core-cdn/ckfinder/core/connector/php/connector.php?command=QuickUpload&type=Flash'}
+			      );
+	return ;
+    }};
+    
+    
+    
+});
+
+
+app.controller('PageEditCtrl', function($scope, $controller, CkEditor){
     $controller('AdminCtrl', {$scope:$scope});
     $scope.page.title = "Page"
     $scope.siteData = {};
@@ -98,8 +118,9 @@ app.controller('PageEditCtrl', function($scope, $controller){
     };
     $scope.$on('$routeChangeSuccess', function() {
 	console.log('this is called');
-	var newCKEdit = CKEDITOR.replace('description');
-	CKFinder.setupCKEditor(newCKEdit, '/core-cdn/ckfinder/');
+	var ckeditor = CkEditor.initEditor('description');
+	console.log(ckeditor);
+	
     });
 
 

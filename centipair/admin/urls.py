@@ -7,6 +7,8 @@ urlpatterns = patterns(
     # url(r'^$', 'saas.views.home', name='home'),
     # url(r'^blog/', include('blog.urls')),
     url(r'^$', AdminHome.as_view(), name='admin-home'),
+    url(r'^image-upload$', 'centipair.admin.views.image_upload_test',
+        name='image-upload'),
     url(r'^404$', Admin404.as_view(), name='admin-404'),
     url(r'^dashboard$', Dashboard.as_view(), name='dashboard'),
     url(r'^sites$', SitesPage.as_view(), name='sites'),

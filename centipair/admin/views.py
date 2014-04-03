@@ -203,3 +203,9 @@ class BlogEditView(SiteAdminCRUD):
 
     def execute(self, request, form):
         return HttpResponse('form saved')
+
+
+from django.views.decorators.csrf import csrf_exempt
+@csrf_exempt
+def image_upload_test(request):
+    return HttpResponse("<script type='text/javascript'>window.parent.CKEDITOR.tools.callFunction(1, '/core-cdn/kid.jpg', 'message');</script>")
