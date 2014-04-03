@@ -48,10 +48,11 @@ class SiteAdminCRUD(CoreFormView):
                 )
             except self.model.DoesNotExist:
                 return None
-            form_init = self.form_class(initial=form_object.__dict__)
+            form_init = self.form_class(initial=form_object.__dict__,
+                                        request=request)
             return form_init
         else:
-            form_init = self.form_class()
+            form_init = self.form_class(request=request)
             return form_init
 
     def get_list_view(self, request):

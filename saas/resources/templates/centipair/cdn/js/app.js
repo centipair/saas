@@ -117,9 +117,7 @@ app.controller('PageEditCtrl', function($scope, $controller, CkEditor){
 	console.log('Page Callback');
     };
     $scope.$on('$routeChangeSuccess', function() {
-	console.log('this is called');
-	var ckeditor = CkEditor.initEditor('description');
-	console.log(ckeditor);
+	CkEditor.initEditor('description');
 	
     });
 

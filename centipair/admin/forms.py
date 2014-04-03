@@ -5,6 +5,7 @@ from centipair.core.site import SITE_APPS
 
 
 class SiteForm(ObjectForm):
+
     name = forms.CharField(
         widget=AngularInput(label=_('Site name')))
     default_app = forms.CharField(widget=SelectInput(

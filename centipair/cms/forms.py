@@ -6,7 +6,7 @@ from centipair.core.forms import AngularInput, SelectInput, AngularTextArea,\
 
 
 class PageForm(ObjectForm):
-    site = forms.IntegerField(widget=SelectInput(label=_('Site')))
+
     title = forms.CharField(
         widget=AngularInput(label=_('Title')))
     url = forms.CharField(widget=AngularInput(label=_('URL')))

@@ -14,6 +14,7 @@ from centipair.core.utilities import unique_name, generate_username, \
     generate_service_domain_name
 from centipair.core.models import Site, SiteUser, App
 from centipair.core.templates import initialize_template
+from centipair.core.site import my_site_options
 
 
 class SelectInput(forms.Widget):
@@ -125,7 +126,11 @@ class ObjectForm(forms.Form):
     def __init__(self, *args, **kwargs):
         self.request = kwargs.pop('request', None)
         self.new = False
+        request = self.request
         super(ObjectForm, self).__init__(*args, **kwargs)
+        site_options = my_site_options(request.user)
+        self.fields['site'] = forms.IntegerField(
+            widget=SelectInput(label=_('Site'), options=site_options))
 
     id = forms.IntegerField(widget=AngularInput(input_type="hidden"),
                             required=False)

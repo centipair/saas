@@ -127,6 +127,7 @@ class CoreFormView(FormView):
             return HttpResponse('Login required', status=403)
 
     def get_form_kwargs(self):
+        print "kwaaargsing"
         kwargs = super(CoreFormView, self).get_form_kwargs()
         kwargs['request'] = self.request
         return kwargs
