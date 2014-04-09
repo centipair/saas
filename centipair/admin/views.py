@@ -28,6 +28,7 @@ class SiteAdminCRUD(CoreFormView):
     context = {}
     list_template_name = ""
     serializer = None
+    initial = {}
 
     def get_action(self, request, *args, **kwargs):
         action = request.GET['action']
@@ -52,7 +53,7 @@ class SiteAdminCRUD(CoreFormView):
                                         request=request)
             return form_init
         else:
-            form_init = self.form_class(request=request)
+            form_init = self.form_class(request=request, initial=self.initial)
             return form_init
 
     def get_list_view(self, request):
@@ -140,7 +141,7 @@ class SitesEdit(SiteAdminFormView):
                 siteuser__role=self.role)
         except Site.DoesNotExist:
             return HttpResponse('Site not found', status=404)
-        form = SiteForm(initial=site.__dict__)
+        form = SiteForm(initial=site.__dict__, request=request)
         apps = App.objects.filter(site=site).exclude(
             app=settings.APPS['SITE-ADMIN'])
         return render_template(request, "site_form.html",
@@ -184,12 +185,25 @@ class PageEditView(SiteAdminCRUD):
     template_name = "page_form.html"
     serializer = PageSerializer
     model = Page
+    initial = {"template": "page.html", "base_template": "base.html"}
 
     def get(self, request, *args, **kwargs):
         return self.get_action(request)
 
-    def execute(self, request, form):
+    def execute(self, form, request):
+        form.save()
         return HttpResponse('form saved')
+
+
+class PageCreateView(SiteAdminView):
+    app = settings.APPS['CMS']
+
+    def get(self, request, *args, **kwargs):
+        print "page-create-view"
+        return render_template(
+            request, "index.html",
+            context={'content_editor': '<script src="/core-cdn/ckeditor/ckeditor.js"></script>'},
+            base="base.html")
 
 
 class BlogEditView(SiteAdminCRUD):
@@ -198,11 +212,12 @@ class BlogEditView(SiteAdminCRUD):
     template_name = "blog_form.html"
     serializer = BlogSerializer
     model = Page
+    initial = {"template": "page.html", "base_template": "base.html"}
 
     def get(self, request, *args, **kwargs):
         return self.get_action(request)
 
-    def execute(self, request, form):
+    def execute(self, form, request):
         return HttpResponse('form saved')
 
 

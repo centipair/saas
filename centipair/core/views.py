@@ -26,7 +26,7 @@ class JSONResponse(HttpResponse):
 
 
 def home(request):
-    return render_template(request, "index.html", base="base.html")
+    return render_template(request, "index.html", context={}, base="base.html")
 
 
 def logout_view(request):
@@ -35,7 +35,7 @@ def logout_view(request):
 
 
 def core_pricing(request):
-    return render_template(request, 'pricing.html',
+    return render_template(request, 'pricing.html', context={},
                            app=settings.APPS['CORE'],
                            base="base.html")
 

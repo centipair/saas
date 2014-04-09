@@ -18,6 +18,8 @@ class Page(models.Model):
     created_date = models.DateTimeField()
     site = models.ForeignKey(Site)
     published = models.BooleanField(default=False)
+    base_template = models.CharField(max_length=64)
+    template = models.CharField(max_length=64)
 
     def __unicode__(self):
         return u'%s' % (self.name)

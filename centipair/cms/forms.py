@@ -10,6 +10,10 @@ class PageForm(ObjectForm):
     title = forms.CharField(
         widget=AngularInput(label=_('Title')))
     url = forms.CharField(widget=AngularInput(label=_('URL')))
+    template = forms.CharField(
+        widget=AngularInput(label=_('Template')))
+    base_template = forms.CharField(
+        widget=AngularInput(label=_('Base Template')))
     description = forms.CharField(
         widget=CkEditor(label=_('Description')),
         required=False)
@@ -19,6 +23,14 @@ class PageForm(ObjectForm):
     meta_keywords = forms.CharField(
         widget=AngularInput(label=_('Meta Keywords')),
         required=False)
+
+    def create(self):
+        print "save called"
+        return
+
+    def update(self):
+        print "update called"
+        return
 
 
 class BlogForm(ObjectForm):

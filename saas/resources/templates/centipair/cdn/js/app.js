@@ -170,6 +170,7 @@ app.service("Callback", function(){
 app.service("PostData", function($http, $q, Notifier){
     
     return {submitForm: function(url, data){
+	console.log(data);
 	var deferred = $q.defer();
 	$http(
 	    {url: url, 
@@ -280,14 +281,25 @@ app.controller('SubmitCtrl', function($scope, $controller, $http, PostData, GetD
     };
     $scope.getCallback=function(data){
     };
+    $scope.serialize = function(obj, prefix) {
+	var str = [];
+	for(var p in obj) {
+	    var k = prefix ? prefix + "[" + p + "]" : p, v = obj[p];
+	    str.push(typeof v == "object" ?
+		     serialize(v, k) :
+		     encodeURIComponent(k) + "=" + encodeURIComponent(v));
+	}
+	return str.join("&");
+    };
     $scope.submitFormService=function(url){
 	$scope.submitButton.disabled = true;
 	$scope.submitButton.text = 'Submitting';
 	$scope.notify(102, $scope.loaderMessage)
 	$scope.errors = {};
 	submit_data = $scope.form;
+	console.log(submit_data);
 	submit_data["csrfmiddlewaretoken"] = document.getElementsByName('csrfmiddlewaretoken')[0].value;
-	$scope.response  = PostData.submitForm(url, $.param(submit_data)).then(
+	$scope.response  = PostData.submitForm(url, $scope.serialize(submit_data)).then(
 	    function (response){
 		//this is success data
 		$scope.submitButton.disabled=false;
