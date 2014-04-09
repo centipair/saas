@@ -116,11 +116,13 @@ class Admin404(SiteAdminView):
 
 class AdminHome(SiteAdminView):
     def get(self, request, *args, **kwargs):
+        print "admin home?"
         return render_template(request, "admin-base.html", app=self.app)
 
 
 class Dashboard(SiteAdminView):
     def get(self, request, *args, **kwargs):
+        print "admin dash?"
         return render_template(request, "dashboard.html", app=self.app)
 
 

@@ -108,10 +108,17 @@ app.service("CkEditor", function(){
 });
 
 
+app.filter('urlize', function(){
+    return function (text){
+	return text.toLowerCase().replace(/[^\w ]+/g,'').replace(/ +/g,'-');
+	//return "urlized? filter?";
+    }
+});
+
 app.controller('PageEditCtrl', function($scope, $controller, CkEditor){
     $controller('AdminCtrl', {$scope:$scope});
-    $scope.page.title = "Page"
     $scope.siteData = {};
+    $scope.form = {url:"", title:""};
     $scope.loaderMessage="Saving..";
     $scope.callback = function(data){
 	console.log('Page Callback');
@@ -120,7 +127,9 @@ app.controller('PageEditCtrl', function($scope, $controller, CkEditor){
 	CkEditor.initEditor('description');
 	
     });
-
+    $scope.$watch('form.title', function(v){
+	$scope.form.url = $scope.form.title.toLowerCase().replace(/[^\w ]+/g,'').replace(/ +/g,'-');
+    });
 
 });
 

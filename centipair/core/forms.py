@@ -29,6 +29,9 @@ class SelectInput(forms.Widget):
         else:
             self.options = []
 
+        if "filter" in kwargs:
+            self.filter = "|" + kwargs.pop("filter")
+
         super(SelectInput, self).__init__(*args, **kwargs)
 
     def render(self, name, value, attrs=None):
@@ -83,6 +86,11 @@ class AngularInput(forms.Widget):
         if "placeholder" in kwargs:
             self.placeholder = kwargs.pop("placeholder")
         self.ng_init = ""
+
+        if "filter" in kwargs:
+            self.angular_filter = "|" + kwargs.pop("filter")
+        else:
+            self.angular_filter = ""
 
         super(AngularInput, self).__init__(*args, **kwargs)
 

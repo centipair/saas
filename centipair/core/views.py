@@ -127,7 +127,6 @@ class CoreFormView(FormView):
             return HttpResponse('Login required', status=403)
 
     def get_form_kwargs(self):
-        print "kwaaargsing"
         kwargs = super(CoreFormView, self).get_form_kwargs()
         kwargs['request'] = self.request
         return kwargs
@@ -138,7 +137,6 @@ class CoreFormView(FormView):
         return HttpResponse(data, **response_kwargs)
 
     def form_invalid(self, form):
-        print "form invalid called"
         self.response_json["errors"] = form.errors
         self.response_json["message"] = self.form_error_message
         return self.render_to_json_response(self.response_json, status=422)
@@ -170,7 +168,7 @@ class CoreFormView(FormView):
 class RegistrationView(CoreFormView):
     form_class = RegistrationForm
     template_name = settings.CORE_TEMPLATE_PATH + '/registration_form.html'
-    success_message = _("Registration success. Please activate your account by following the instructions we send to your email.")
+    success_message = _("Registration success.")
     app = settings.APPS['CORE']
 
     def execute(self, form, request):

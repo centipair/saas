@@ -25,7 +25,7 @@ def core_cdn_file(request, source):
 
 def render_template(request, template_file, context={}, app=None, base=None):
     """Renders template based on the site"""
-    print context
+
     site = request.site
     site_template_dir = site.template_dir
     if app:
@@ -47,5 +47,5 @@ def render_template(request, template_file, context={}, app=None, base=None):
     if base:
         base_location = template_dir + base
         context["centipair_base_template"] = base_location
-    print context
+
     return render(request, template_location, context)
